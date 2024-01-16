@@ -4,7 +4,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forklifts and Pallets Data</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <!-- Add some CSS for styling here -->
 </head>
 <html>
@@ -33,5 +32,8 @@
         </tr>
         {% endfor %}
     </tbody>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
 </table>
 </html>

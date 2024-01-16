@@ -5,10 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create New Data Entry</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        function validateIdFormat() {
+            var idInput = document.getElementById('id');
+            var idValue = idInput.value;
+            var idPattern = /^F-\d{4}$/;  // Regular expression for the format "F-1234"
+
+            if (!idPattern.test(idValue)) {
+                alert('ID must be in the F-1234 format');
+                idInput.focus();
+                return false;
+            }
+            return true;
+        }
+    </script>
+
 </head>
 <body>
     <h1>Create New Data Entry</h1>
-    <form method="POST">
+    <form method="POST" onsubmit="return validateIdFormat()">
         <label for="id">ID:</label>
         <input type="text" id="id" name="id" required>
         <br>
@@ -28,5 +43,7 @@
         <button type="submit">Create</button>
     </form>
     <a href="{{ url_for('index') }}">Back to List</a>
+
+    <script href="{{ url_for('static', filename='js/validation.js') }}"></script>
 </body>
 </html>
