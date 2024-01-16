@@ -6,49 +6,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forklifts and Pallets Data</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <!-- Add some CSS for styling here -->
 </head>
 <body>
     <a href="/forklifts">Search Page</a>
+    <a href="/create">Create Page</a>
+
     <h1>Forklifts Information</h1>
     <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Last User ID</th>
-                <th>Last User</th>
-                <th>Last Pallet</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for forklift in forklifts  %}
-            <tr>
-                <td>{{ forklift.id }}</td>
-                <td>{{ forklift.lastUserId }}</td>
-                <td>{{ forklift.lastUser }}</td>
-                <td>{{ forklift.lastPallet }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <h1>Pallets Information</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>State</th>
-                <th>Location</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for pallet in pallets %}
-            <tr>
-                <td>{{ pallet['id'] }}</td>
-                <td>{{ pallet['state'] }}</td>
-                <td>{{ pallet['location'] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Last User ID</th>
+            <th>Last User</th>
+            <th>Last Pallet</th>
+            <th>Actions</th>  <!-- Add a new column for actions -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for forklift in forklifts %}
+        <tr>
+            <td>{{ forklift.id }}</td>
+            <td>{{ forklift.lastUserId }}</td>
+            <td>{{ forklift.lastUser }}</td>
+            <td>{{ forklift.lastPallet }}</td>
+            <td>
+                <a href="{{ url_for('edit', id=forklift.id) }}">Edit</a> | 
+                <a href="{{ url_for('delete', id=forklift.id) }}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 </body>
 </html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Data Entry</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Edit Data Entry</h1>
+    <form method="POST">
+        <input type="hidden" name="_method" value="PUT">  <!-- This is for using PUT in Flask -->
+
+        <label for="lastUserId">Last User ID:</label>
+        <input type="text" id="lastUserId" name="lastUserId" value="{{ data.lastUserId }}" required>
+        <br>
+
+        <label for="lastUser">Last User:</label>
+        <input type="text" id="lastUser" name="lastUser" value="{{ data.lastUser }}" required>
+        <br>
+
+        <label for="lastPallet">Last Pallet:</label>
+        <input type="text" id="lastPallet" name="lastPallet" value="{{ data.lastPallet }}" required>
+        <br>
+
+        <button type="submit">Update</button>
+    </form>
+    <a href="{{ url_for('index') }}">Back to List</a>
+</body>
+</html>
