@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Pallets</title>
+</head>
+<body>
+    <h1>Pallets Information</h1>
+    <a class="btn" href="/">HomePage</a>
+    <a class="btn" href="/forklifts">Forklift Page</a>
+    <a class="btn_create" href="{{ url_for('create_pallet') }}">Create Pallet</a>
+    <h3>Pallets Information</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>State</th>
+                <th>Location</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pallet in pallets %}
+            <tr>
+                <td>{{ pallet.id }}</td>
+                <td>{{ pallet.state }}</td>
+                <td>{{ pallet.location }}</td>
+                <td>
+                    <a href="{{ url_for('edit_pallet', id=pallet.id) }}">Edit</a>
+                    <a href="{{ url_for('delete_pallet', id=pallet.id) }}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

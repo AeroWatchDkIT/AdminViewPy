@@ -5,6 +5,8 @@ app = Flask(__name__)
 
 # Define your API endpoints
 FORKLIFTS_API = 'https://localhost:7128/Forklifts'
+PALLETS_API = 'https://localhost:7128/Pallets'
+
 
 @app.route('/')
 def index():
@@ -18,7 +20,7 @@ def index():
     return render_template('index.html', forklifts=forklifts_data)
 
 # Create Data (Create)
-@app.route('/create', methods=['GET', 'POST'])
+@app.route('/createForklift', methods=['GET', 'POST'])
 def create():
     if request.method == 'POST':
         # Process the form data and create a new data entry using the API
@@ -35,7 +37,7 @@ def create():
             return redirect(url_for('index'))
     
     # Display a form for creating new data
-    return render_template('create.html')
+    return render_template('createForklift.html')
 
 @app.route('/forklifts')
 def forklifts():
@@ -57,7 +59,7 @@ def forklifts():
     return render_template('forklifts.html', forklifts=forklifts_data)
 
 # Update Data (Update)
-@app.route('/edit/<string:id>', methods=['GET', 'POST'])
+@app.route('/editForklifts/<string:id>', methods=['GET', 'POST'])
 def edit(id):
     # Fetch the existing data entry based on the provided ID
     response = requests.get(f'{FORKLIFTS_API}/{id}', verify=False)
@@ -82,10 +84,10 @@ def edit(id):
             return redirect(url_for('index'))
 
     # Display a form for editing the existing data
-    return render_template('edit.html', data=data_entry)
+    return render_template('editForklift.html', data=data_entry)
 
 # Delete Data (Delete)
-@app.route('/delete/<string:id>', methods=['GET', 'POST'])
+@app.route('/deleteForklifts/<string:id>', methods=['GET', 'POST'])
 def delete(id):
     if request.method == 'POST':
         # Send a DELETE request to your API to delete the data entry by ID
@@ -95,7 +97,78 @@ def delete(id):
             return redirect(url_for('index'))
 
     # Display a confirmation page for deleting the data
-    return render_template('delete.html', id=id)
+    return render_template('deleteForklift.html', id=id)
+
+# Fetch Pallets Data (Read)
+@app.route('/pallets')
+def pallets():
+    # Fetch data from the Pallets endpoint
+    pallet_response = requests.get(PALLETS_API, verify=False)
+    if pallet_response.status_code == 200:
+        pallets_data = pallet_response.json()  # Assuming this is a list directly
+    else:
+        pallets_data = []
+
+    return render_template('pallets.html', pallets=pallets_data)
+
+# Create Pallet Data (Create)
+@app.route('/createPallet', methods=['GET', 'POST'])
+def create_pallet():
+    if request.method == 'POST':
+        # Process the form data and create a new pallet entry using the API
+        new_pallet_data = {
+            'id': request.form['id'],
+            'state': int(request.form['state']),
+            'location': request.form['location']
+        }
+        # Send a POST request to your Pallets API to create the new pallet entry
+        response = requests.post(PALLETS_API, json=new_pallet_data, verify=False)
+        if response.status_code == 201:  # Assuming a successful creation status code
+            # Redirect to the pallets listing page after successful creation
+            return redirect(url_for('pallets'))
+
+    # Display a form for creating new pallet data
+    return render_template('createPallet.html')
+
+# Update Pallet Data (Update)
+@app.route('/editPallet/<string:id>', methods=['GET', 'POST'])
+def edit_pallet(id):
+    # Fetch the existing pallet data entry based on the provided ID
+    response = requests.get(f'{PALLETS_API}/{id}', verify=False)
+    if response.status_code == 200:
+        pallet_entry = response.json()  # Assuming your API provides data by ID
+    else:
+        # Handle not found or other error scenarios
+        # You can redirect to an error page or show an error message
+        return 'Pallet data not found', 404
+    
+    if request.method == 'POST':
+        # Process the form data and update the existing pallet data entry using the API
+        updated_pallet_data = {
+            'state': int(request.form['state']),
+            'location': request.form['location']
+        }
+        # Send a PUT request to your Pallets API to update the pallet data entry
+        response = requests.put(f'{PALLETS_API}/{id}', json=updated_pallet_data, verify=False)
+        if response.status_code == 200:  # Assuming a successful update status code
+            # Redirect to the pallets listing page after successful update
+            return redirect(url_for('pallets'))
+
+    # Display a form for editing the existing pallet data
+    return render_template('editPallet.html', pallet=pallet_entry)
+
+# Delete Pallet Data (Delete)
+@app.route('/deletePallet/<string:id>', methods=['GET', 'POST'])
+def delete_pallet(id):
+    if request.method == 'POST':
+        # Send a DELETE request to your Pallets API to delete the pallet data entry by ID
+        response = requests.delete(f'{PALLETS_API}/{id}', verify=False)
+        if response.status_code == 204:  # Assuming a successful deletion status code
+            # Redirect to the pallets listing page after successful deletion
+            return redirect(url_for('pallets'))
+
+    # Display a confirmation page for deleting the pallet data
+    return render_template('deletePallet.html', id=id)
 
 if __name__ == '__main__':
     app.run(debug=True)

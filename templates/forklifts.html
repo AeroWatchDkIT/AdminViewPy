@@ -7,7 +7,11 @@
     <!-- Add some CSS for styling here -->
 </head>
 <html>
-    <a href="/">HomePage</a>
+<h1>Forklift Information</h1>
+<a class="btn" href="/">HomePage</a>
+<a class="btn_create" href="/createForklift">Create Forklift</a>
+<a class="btn" href="/pallets">Pallet Page</a>
+<h3>Forklifts Information</h3>
 <form action="/forklifts" method="get">
     <input type="text" name="search" placeholder="Enter search term">
     <button type="submit">Search</button>
@@ -20,6 +24,7 @@
             <th>Last User ID</th>
             <th>Last User</th>
             <th>Last Pallet</th>
+            <th>Actions</th>  <!-- Add a new column for actions -->
         </tr>
     </thead>
     <tbody>
@@ -29,6 +34,10 @@
             <td>{{ forklift.lastUserId }}</td>
             <td>{{ forklift.lastUser }}</td>
             <td>{{ forklift.lastPallet }}</td>
+            <td>
+                <a href="{{ url_for('edit', id=forklift.id) }}">Edit</a> | 
+                <a href="{{ url_for('delete', id=forklift.id) }}">Delete</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

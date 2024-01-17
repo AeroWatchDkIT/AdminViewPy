@@ -1,43 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forklifts and Pallets Data</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- Add some CSS for styling here -->
+    <title>Welcome to Your Application</title>
 </head>
 <body>
-    <a href="/forklifts">Search Page</a>
-    <a href="/create">Create Page</a>
-
-    <h1>Forklifts Information</h1>
-    <table border="1">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Last User ID</th>
-            <th>Last User</th>
-            <th>Last Pallet</th>
-            <th>Actions</th>  <!-- Add a new column for actions -->
-        </tr>
-    </thead>
-    <tbody>
-        {% for forklift in forklifts %}
-        <tr>
-            <td>{{ forklift.id }}</td>
-            <td>{{ forklift.lastUserId }}</td>
-            <td>{{ forklift.lastUser }}</td>
-            <td>{{ forklift.lastPallet }}</td>
-            <td>
-                <a href="{{ url_for('edit', id=forklift.id) }}">Edit</a> | 
-                <a href="{{ url_for('delete', id=forklift.id) }}">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <h1>Welcome to Your Application</h1>
+    <p>This is the homepage of your application. You can use this page to provide a brief introduction or summary of what your application does.</p>
+    <a class="btn" href="/forklifts">Go to Forklift Page</a>
+    <a class="btn" href="/pallets">Go to Pallet Page</a>
 </body>
 </html>

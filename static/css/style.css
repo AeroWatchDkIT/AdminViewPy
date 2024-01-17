@@ -48,3 +48,33 @@ cursor: pointer;
 button:hover {
 opacity: 0.9;
 }
+
+ /* Style for buttons */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007BFF; /* Button background color */
+    color: #fff; /* Text color */
+    text-decoration: none;
+    border-radius: 5px; /* Rounded corners */
+    margin-right: 10px; /* Add space between buttons */
+}
+
+.btn:hover {
+    background-color: #0056b3; /* Button background color on hover */
+}
+
+ /* Style for buttons */
+ .btn_create {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ffa600; /* Button background color */
+    color: #fff; /* Text color */
+    text-decoration: none;
+    border-radius: 5px; /* Rounded corners */
+    margin-right: 10px; /* Add space between buttons */
+}
+
+.btn_create:hover {
+    background-color: #b3a100; /* Button background color on hover */
+}
