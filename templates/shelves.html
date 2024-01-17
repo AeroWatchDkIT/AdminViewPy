@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shelves</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Add some CSS for styling here -->
+</head>
+<body>
+    <h1>Shelves</h1>
+    <a class="btn" href="/">HomePage</a>
+    <a class="btn_create" href="/createShelf">Create Shelf</a>
+    <a class="btn" href="/pallets">Pallet Page</a>
+    <a class="btn" href="/forklifts">Forklifts Page</a>
+    <h3> Shelf Information</h3>
+    <table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Pallet ID</th>
+            <th>Location</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for shelf in shelves %}
+        <tr>
+            <td>{{ shelf.id }}</td>
+            <td>{{ shelf.palletId }}</td>
+            <td>{{ shelf.location }}</td>
+            <td>
+                <a href="{{ url_for('editShelf', id=shelf.id) }}">Edit</a> | 
+                <a href="{{ url_for('deleteShelf', id=shelf.id) }}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

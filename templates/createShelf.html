@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Create Shelf</title>
+</head>
+<body>
+    <h1>Create Shelf</h1>
+    <form action="/createShelf" method="POST">
+        <label for="id">ID:</label>
+        <input type="text" id="id" name="id" required>
+        <br>
+        <label for="palletId">Pallet ID:</label>
+        <input type="text" id="palletId" name="palletId">
+        <br>
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required>
+        <br>
+        <button type="submit">Create</button>
+    </form>
+</body>
+</html>

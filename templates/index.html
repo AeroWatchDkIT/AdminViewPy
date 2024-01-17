@@ -4,12 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <title>Welcome to Your Application</title>
+    <title>Welcome to Admin Page</title>
 </head>
 <body>
-    <h1>Welcome to Your Application</h1>
+    <h1>Welcome to Admin Page</h1>
     <p>This is the homepage of your application. You can use this page to provide a brief introduction or summary of what your application does.</p>
     <a class="btn" href="/forklifts">Go to Forklift Page</a>
     <a class="btn" href="/pallets">Go to Pallet Page</a>
+    <a class="btn" href="/shelves">Go to Shelves Page</a>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <canvas id="userFrequencyChart" width="300" height="100"></canvas>
+
+    
+<script type="text/javascript">
+    // CHANGE THIS WHEN YOU HAVE REAL DATA !!!
+     // Sample data
+     const forklifts = [
+        { id: 'F-0007', lastUserId: 'U-0002', lastUser: 'Nikita Fedans', lastPallet: 'P-0003' },
+        { id: 'F-0012', lastUserId: 'U-0001', lastUser: 'Kacper Wroblewski', lastPallet: 'P-0003' },
+        { id: 'F-0016', lastUserId: 'U-0003', lastUser: 'Teodor Donchev', lastPallet: 'P-0005' },
+        { id: 'F-0205', lastUserId: 'U-0003', lastUser: 'Teodor Donchev', lastPallet: 'P-0001' }
+    ];
+
+    // Calculate user frequencies
+    const userFrequency = {};
+    for (const forklift of forklifts) {
+        const userId = forklift.lastUserId;
+        if (!userFrequency[userId]) {
+            userFrequency[userId] = 0;
+        }
+        userFrequency[userId]++;
+    }
+
+    // Get user names and frequency counts as arrays
+    const userNames = Object.keys(userFrequency);
+    const userCounts = Object.values(userFrequency);
+
+    // Create the chart
+    const ctx = document.getElementById('userFrequencyChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: userNames,
+            datasets: [{
+                label: 'Frequency',
+                data: userCounts,
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Frequency'
+                    }
+                }
+            }
+        }
+    });
+   </script>
 </body>
 </html>

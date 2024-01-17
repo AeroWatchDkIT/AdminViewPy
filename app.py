@@ -6,7 +6,7 @@ app = Flask(__name__)
 # Define your API endpoints
 FORKLIFTS_API = 'https://localhost:7128/Forklifts'
 PALLETS_API = 'https://localhost:7128/Pallets'
-
+SHELVES_API = 'https://localhost:7128/Shelves'
 
 @app.route('/')
 def index():
@@ -169,6 +169,63 @@ def delete_pallet(id):
 
     # Display a confirmation page for deleting the pallet data
     return render_template('deletePallet.html', id=id)
+
+# List Shelves
+@app.route('/shelves')
+def shelves():
+    response = requests.get(SHELVES_API, verify=False)
+    if response.status_code == 200:
+        shelves_data = response.json()
+    else:
+        shelves_data = []
+    return render_template('shelves.html', shelves=shelves_data)
+
+# Create Shelf
+@app.route('/createShelf', methods=['GET', 'POST'])
+def createShelf():
+    if request.method == 'POST':
+        new_data = {
+            'id': request.form['id'],
+            'palletId': request.form['palletId'],
+            'pallet': None,  # Adjust this as needed
+            'location': request.form['location']
+        }
+        response = requests.post(SHELVES_API, json=new_data, verify=False)
+        if response.status_code == 201:
+            return redirect(url_for('shelves'))
+    
+    return render_template('createShelf.html')
+
+# Edit Shelf
+@app.route('/editShelf/<string:id>', methods=['GET', 'POST'])
+def editShelf(id):
+    response = requests.get(f'{SHELVES_API}/{id}', verify=False)
+    if response.status_code == 200:
+        shelf_data = response.json()
+    else:
+        return 'Shelf not found', 404
+    
+    if request.method == 'POST':
+        updated_data = {
+            'palletId': request.form['palletId'],
+            'location': request.form['location']
+        }
+        response = requests.put(f'{SHELVES_API}/{id}', json=updated_data, verify=False)
+        if response.status_code == 200:
+            return redirect(url_for('shelves'))
+    
+    return render_template('editShelf.html', shelf=shelf_data)
+
+# Delete Shelf
+@app.route('/deleteShelf/<string:id>', methods=['GET', 'POST'])
+def deleteShelf(id):
+    if request.method == 'POST':
+        response = requests.delete(f'{SHELVES_API}/{id}', verify=False)
+        if response.status_code == 204:
+            return redirect(url_for('shelves'))
+    
+    return render_template('deleteShelf.html', id=id)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
