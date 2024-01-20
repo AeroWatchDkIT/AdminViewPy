@@ -10,7 +10,7 @@
     <h1>Delete Pallet</h1>
     <p>Are you sure you want to delete this pallet (ID: {{ id }})?</p>
     <form method="POST">
-        <button type="submit">Yes, Delete</button>
+        <button href="/pallets" type="submit">Yes, Delete</button>
     </form>
     <a href="{{ url_for('pallets') }}">Cancel</a>
 </body>
