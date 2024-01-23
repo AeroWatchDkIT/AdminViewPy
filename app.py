@@ -8,18 +8,20 @@ FORKLIFTS_API = 'https://localhost:7128/Forklifts'
 PALLETS_API = 'https://localhost:7128/Pallets'
 SHELVES_API = 'https://localhost:7128/Shelves'
 
+# List Forklifts
 @app.route('/')
 def index():
     # Fetch data from the Forklifts endpoint
     response = requests.get(FORKLIFTS_API, verify=False)
     if response.status_code == 200:
-        forklifts_data = response.json().get('forklifts', [])
+        data = response.json()
+        forklifts_data = data.get('entities', [])
     else:
         forklifts_data = []
 
     return render_template('index.html', forklifts=forklifts_data)
 
-# Create Data (Create)
+# Create Forklift
 @app.route('/createForklift', methods=['GET', 'POST'])
 def create():
     if request.method == 'POST':
@@ -31,7 +33,7 @@ def create():
             'lastPallet': request.form['lastPallet']
         }
         # Send a POST request to your API to create the new data entry
-        response = requests.post(FORKLIFTS_API, json=new_data, verify=False)
+        response = requests.post(FORKLIFTS_API, json={'entities': [new_data]}, verify=False)
         if response.status_code == 201:  # Assuming a successful creation status code
             # Redirect to the data listing page after successful creation
             return redirect(url_for('index'))
@@ -39,32 +41,27 @@ def create():
     # Display a form for creating new data
     return render_template('createForklift.html')
 
+# List Forklifts
 @app.route('/forklifts')
 def forklifts():
     # Fetch data from the Forklifts endpoint
-    search_term = request.args.get('search', '')  # 'search' is the query parameter name
-
-    if search_term:
-        # If a search term is provided, use the search endpoint
-        response = requests.get(f'https://localhost:7128/Forklifts/search?SearchTerm={search_term}', verify=False)
-    else:
-        # If no search term is provided, fetch all forklift data
-        response = requests.get('https://localhost:7128/Forklifts', verify=False)
-
-    if response.status_code == 200: 
-        forklifts_data = response.json().get('forklifts', []) # Assuming the search also wraps the data in a 'forklifts' key
+    response = requests.get(FORKLIFTS_API, verify=False)
+    if response.status_code == 200:
+        data = response.json()
+        forklifts_data = data.get('entities', [])
     else:
         forklifts_data = []
-    # Render data in a HTML template
+
+    # Render data in an HTML template
     return render_template('forklifts.html', forklifts=forklifts_data)
 
-# Update Data (Update)
+# Update Forklift
 @app.route('/editForklifts/<string:id>', methods=['GET', 'POST'])
 def edit(id):
     # Fetch the existing data entry based on the provided ID
     response = requests.get(f'{FORKLIFTS_API}/{id}', verify=False)
     if response.status_code == 200:
-        data_entry = response.json()  # Assuming your API provides data by ID
+        data_entry = response.json()
     else:
         # Handle not found or other error scenarios
         # You can redirect to an error page or show an error message
@@ -86,7 +83,7 @@ def edit(id):
     # Display a form for editing the existing data
     return render_template('editForklift.html', data=data_entry)
 
-# Delete Data (Delete)
+# Delete Forklift
 @app.route('/deleteForklifts/<string:id>', methods=['GET', 'POST'])
 def delete(id):
     if request.method == 'POST':
@@ -105,7 +102,8 @@ def pallets():
     # Fetch data from the Pallets endpoint
     pallet_response = requests.get(PALLETS_API, verify=False)
     if pallet_response.status_code == 200:
-        pallets_data = pallet_response.json()  # Assuming this is a list directly
+        data = pallet_response.json()
+        pallets_data = data.get('pallets', [])
     else:
         pallets_data = []
 
@@ -136,15 +134,16 @@ def edit_pallet(id):
     # Fetch the existing pallet data entry based on the provided ID
     response = requests.get(f'{PALLETS_API}/{id}', verify=False)
     if response.status_code == 200:
-        pallet_entry = response.json()  # Assuming your API provides data by ID
+        pallet_entry = response.json()
     else:
         # Handle not found or other error scenarios
         # You can redirect to an error page or show an error message
         return 'Pallet data not found', 404
-    
+
     if request.method == 'POST':
         # Process the form data and update the existing pallet data entry using the API
         updated_pallet_data = {
+            'id': id,
             'state': int(request.form['state']),
             'location': request.form['location']
         }
@@ -175,7 +174,8 @@ def delete_pallet(id):
 def shelves():
     response = requests.get(SHELVES_API, verify=False)
     if response.status_code == 200:
-        shelves_data = response.json()
+        data = response.json()
+        shelves_data = data.get('entities', [])
     else:
         shelves_data = []
     return render_template('shelves.html', shelves=shelves_data)
@@ -190,7 +190,7 @@ def createShelf():
             'pallet': None,  # Adjust this as needed
             'location': request.form['location']
         }
-        response = requests.post(SHELVES_API, json=new_data, verify=False)
+        response = requests.post(SHELVES_API, json={'entities': [new_data]}, verify=False)
         if response.status_code == 201:
             return redirect(url_for('shelves'))
     
@@ -225,7 +225,6 @@ def deleteShelf(id):
             return redirect(url_for('shelves'))
     
     return render_template('deleteShelf.html', id=id)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
