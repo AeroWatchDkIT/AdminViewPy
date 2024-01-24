@@ -7,19 +7,38 @@ app = Flask(__name__)
 FORKLIFTS_API = 'https://localhost:7128/Forklifts'
 PALLETS_API = 'https://localhost:7128/Pallets'
 SHELVES_API = 'https://localhost:7128/Shelves'
+USERS_API = 'https://localhost:7128/Users'
 
-# List Forklifts
 @app.route('/')
 def index():
     # Fetch data from the Forklifts endpoint
-    response = requests.get(FORKLIFTS_API, verify=False)
-    if response.status_code == 200:
-        data = response.json()
-        forklifts_data = data.get('entities', [])
+    response_forklifts = requests.get(FORKLIFTS_API, verify=False)
+    if response_forklifts.status_code == 200:
+        forklifts_data = response_forklifts.json().get('entities', [])
     else:
         forklifts_data = []
 
-    return render_template('index.html', forklifts=forklifts_data)
+    # Fetch user data from the provided API
+    response_users = requests.get(USERS_API, verify=False)
+    if response_users.status_code == 200:
+        users_data = response_users.json().get('users', [])
+    else:
+        users_data = []
+
+    return render_template('index.html', forklifts=forklifts_data, users=users_data)
+
+@app.route('/user/<string:user_id>')
+def view_user(user_id):
+    # Fetch the user data by user_id from your API or database
+    response = requests.get(f'{USERS_API}/{user_id}', verify=False)
+    
+    if response.status_code == 200:
+        user = response.json()
+    else:
+        # Handle the case where the user is not found or an error occurs
+        user = None
+
+    return render_template('viewUsers.html', user=user)
 
 # Create Forklift
 @app.route('/createForklift', methods=['GET', 'POST'])
@@ -29,8 +48,21 @@ def create():
         new_data = {
             'id': request.form['id'],
             'lastUserId': request.form['lastUserId'],
-            'lastUser': request.form['lastUser'],
-            'lastPallet': request.form['lastPallet']
+            'lastUser': {
+                'id': request.form['lastUserId'],
+                'userType': int(request.form['userType']),  # Adjust as needed
+                'firstName': request.form['firstName'],
+                'lastName': request.form['lastName'],
+                'passcode': request.form['passcode'],
+                'forkliftCertified': True if request.form['forkliftCertified'] == 'true' else False,
+                'incorrectPalletPlacements': int(request.form['incorrectPalletPlacements'])
+            },
+            'lastPalletId': request.form['lastPalletId'],
+            'lastPallet': {
+                'id': request.form['lastPalletId'],
+                'state': int(request.form['state']),
+                'location': request.form['location']
+            }
         }
         # Send a POST request to your API to create the new data entry
         response = requests.post(FORKLIFTS_API, json={'entities': [new_data]}, verify=False)
@@ -70,9 +102,23 @@ def edit(id):
     if request.method == 'POST':
         # Process the form data and update the existing data entry using the API
         updated_data = {
+            'id': request.form['id'],
             'lastUserId': request.form['lastUserId'],
-            'lastUser': request.form['lastUser'],
-            'lastPallet': request.form['lastPallet']
+            'lastUser': {
+                'id': request.form['lastUserId'],
+                'userType': 0,  # Adjust as needed
+                'firstName': request.form['firstName'],
+                'lastName': request.form['lastName'],
+                'passcode': request.form['passcode'],
+                'forkliftCertified': True if request.form['forkliftCertified'] == 'true' else False,
+                'incorrectPalletPlacements': int(request.form['incorrectPalletPlacements'])
+            },
+            'lastPalletId': request.form['lastPalletId'],
+            'lastPallet': {
+                'id': request.form['lastPalletId'],
+                'state': int(request.form['state']),
+                'location': request.form['location']
+            }
         }
         # Send a PUT request to your API to update the data entry
         response = requests.put(f'{FORKLIFTS_API}/{id}', json=updated_data, verify=False)

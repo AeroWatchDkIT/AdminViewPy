@@ -48,10 +48,9 @@
                                     </a>
                                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                                         <div class="bg-white py-2 collapse-inner rounded">
-                                            <a class="collapse-item" href="buttons.html">Joe Bloggs</a> <!-- Change HTML  -->
-                                            <a class="collapse-item" href="cards.html">John David</a>
-                                            <a class="collapse-item" href="cards.html">Arthur Lee</a>
-                                            <a class="collapse-item" href="cards.html">Bob Flitt</a>
+                                            {% for user in users %}
+                                                <a class="collapse-item" href="/user/{{ user.id }}">{{ user.firstName }} {{ user.lastName }}</a>
+                                            {% endfor %}
                                         </div>
                                     </div>
                                 </li>

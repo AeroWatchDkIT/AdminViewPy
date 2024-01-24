@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Details</title>
+</head>
+<body>
+    <h1>User Details</h1>
+    {% if user %}
+        <p>ID: {{ user.id }}</p>
+        <p>First Name: {{ user.firstName }}</p>
+        <p>Last Name: {{ user.lastName }}</p>
+        <p>User Type: {{ user.userType }}</p>
+        <p>Forklift Certified: {{ user.forkliftCertified }}</p>
+        <p>Incorrect Pallet Placements: {{ user.incorrectPalletPlacements }}</p>
+    {% else %}
+        <p>User not found or an error occurred.</p>
+    {% endif %}
+</body>
+</html>
