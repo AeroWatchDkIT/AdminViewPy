@@ -23,3 +23,14 @@ drop-database
 update-database
 
 ```
+
+## Big note
+- As api needed CORS whitelisting `api program.cs()` code had to include 
+```bash 
+app.UseCors(options =>
+{
+	options.WithOrigins("http://127.0.0.1:5000") // Adjust your allowed origins here
+		.AllowAnyHeader()
+		.AllowAnyMethod();
+});
+```
