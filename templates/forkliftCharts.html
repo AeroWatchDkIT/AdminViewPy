@@ -1,93 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PalletSync Admin</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/sb-admin-2.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/vendor/fontawesome-free/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/sb-admin-2.min.css') }}">
+    <title>PalletSync - Forklifts Tables</title>
+    <!-- Custom fonts for this template -->
+    <link href="{{url_for('static', filename='bootstrap/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    <link rel="icon" href="{{url_for('static', filename='bootstrap/img/PalletSync2Logo.jpg')}}" type="image/x-icon" />
-
+    <link href="{{url_for('static', filename='bootstrap/css/sb-admin-2.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='bootstrap/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+    <link rel="icon" href="{{url_for('static',filename='bootstrap/img/PalletSync2Logo.jpg')}}" type="image/x-icon" />
 </head>
-<body id="page-top">
-
+<html>
 
     <!-- Page Wrapper -->
     <div id="wrapper">
+
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
-                <div class="sidebar-brand-icon rotate-n-15">
-                </div>
-                <div class="sidebar-brand-text mx-3">PalletSync </div>
-            </a>
-                <!-- Divider -->
-                <hr class="sidebar-divider my-0">
-                    <!-- Nav Item - Dashboard -->
-                    <li class="nav-item active">
-                        <a class="nav-link" href="">
-                            <i class="fas fa-fw fa-tachometer-alt"></i>
-                            <span>Dashboard</span></a>
-                    </li>
-                        <!-- Divider -->
-                        <hr class="sidebar-divider">
-                            <!-- Heading -->
-                            <div class="sidebar-heading">
-                                Interface
-                            </div>
-                                 <!-- Nav Item - Pages Collapse Menu -->
-                                <li class="nav-item">
-                                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                                        aria-expanded="true" aria-controls="collapseTwo">
-                                        <i class="fas fa-fw  fa-user
-                                        "></i>
-                                        <span>Users</span>
-                                    </a>
-                                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                                        <div class="bg-white py-2 collapse-inner rounded">
-                                            {% for user in users %}
-                                                <a class="collapse-item" href="/user/{{ user.id }}">{{ user.firstName }} {{ user.lastName }}</a>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </li>
  
-                                    <!-- Divider -->
-                                    <hr class="sidebar-divider">
-                                        <!-- Heading -->
-                                        <div class="sidebar-heading">
-                                            Charts
-                                        </div>
+         <!-- Sidebar - Brand -->
+         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+             <div class="sidebar-brand-icon rotate-n-15">
+             </div>
+             <div class="sidebar-brand-text mx-3">PalletSync </div>
+         </a>
+ 
+         <!-- Divider -->
+         <hr class="sidebar-divider my-0">
+ 
+         <!-- Nav Item - Dashboard -->
+         <li class="nav-item active">
+             <a class="nav-link" href="/">
+                 <i class="fas fa-fw fa-tachometer-alt"></i>
+                 <span>Dashboard</span></a>
+         </li>
+ 
+         <!-- Divider -->
+         <hr class="sidebar-divider">
+ 
+         <!-- Heading -->
+         <div class="sidebar-heading">
+             Interface
+         </div>
  
          <!-- Nav Item - Pages Collapse Menu -->
-     
-         <!-- Nav Item - Charts -->
          <li class="nav-item">
-             <a class="nav-link" href="/forkliftsCharts">
-                 <i class="fas fa-fw fa-chart-area"></i>
-                 <span>Forklift Charts</span></a>
+             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                 aria-expanded="true" aria-controls="collapseTwo">
+                 <i class="fas fa-fw  fa-user
+                 "></i>
+                 <span>Users</span>
+             </a>
+             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    {% for user in users %}
+                        <a class="collapse-item" href="/user/{{ user.id }}">{{ user.firstName }} {{ user.lastName }}</a>
+                    {% endfor %}
+                </div>
+            </div>
          </li>
-         
+ 
+         <!-- Divider -->
          <hr class="sidebar-divider">
-         <div class="sidebar-heading">
-            Tables
-        </div>
-
+ 
+        <!-- Nav Item - Charts -->
+        <li class="nav-item">
+            <a class="nav-link" href="">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Forklift Charts</span></a>
+        </li>
+        
+        <hr class="sidebar-divider">
+        <div class="sidebar-heading">
+           Tables
+       </div>
+ 
          <!-- Nav Item - Tables -->
          <li class="nav-item">
-             <a class="nav-link" href="/forklifts">
+             <a class="nav-link" href="/pallets">
                  <i class="fas fa-fw fa-table"></i>
-                 <span>Forklift Table</span></a>
+                 <span>Pallet Tables</span></a>
          </li>
-         <li class="nav-item">
-            <a class="nav-link" href="/pallets">
-                <i class="fas fa-fw fa-table"></i>
-                <span>Pallet Table</span></a>
-        </li>
-        <li class="nav-item">
+ 
+          <!-- Nav Item - Tables -->
+          <li class="nav-item">
             <a class="nav-link" href="/shelves">
                 <i class="fas fa-fw fa-table"></i>
                 <span>Shelf Tables</span></a>
@@ -119,19 +116,20 @@
                  </button>
  
                  <!-- Topbar Search -->
-                 <form
+                 <form action="/forklifts" method="get"
                      class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                      <div class="input-group">
-                         <input type="text" class="form-control bg-light border-0 small" placeholder="Search for... {NOT COMPLETE YET}"
+                         <input name="search" type="text" class="form-control bg-light border-0 small" placeholder="Search for term..."
                              aria-label="Search" aria-describedby="basic-addon2">
                          <div class="input-group-append">
-                             <button class="btn btn-primary" type="button">
+                             <button class="btn btn-primary" type="submit">
                                  <i class="fas fa-search fa-sm"></i>
                              </button>
                          </div>
+                         <a class="btn m-0 font-weight-bold text-center" href="/createForklift">Create Forklift</a>
                      </div>
                  </form>
- 
+                 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
                  <!-- Topbar Navbar -->
                  <ul class="navbar-nav ml-auto">
  
@@ -220,97 +218,74 @@
                          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                              <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin Account</span>
-                         </a>
-                
-                     </li>
- 
+                        </a>
+                    </li>
                  </ul>
  
              </nav>
              <!-- End of Topbar -->
- 
                  <!-- Begin Page Content -->
-                 <div class="container-fluid">
+                 <div class="container-fluid"> 
+                    
+                      <!-- Content Row -->
+                      <div class="row">
+ 
+                        <div class="col-xl-8 col-lg-7">
 
-                    <h1>Welcome to Admin Page</h1>
-                    <p>This is the homepage of your application. You can use this page to provide a brief introduction or summary of what your application does.</p>
-                    <p>Below is a chart that shows the frequency of users using the system.</p>
+                            <!-- Area Chart -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Area Chart</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <canvas id="myAreaChart"></canvas>
+                                    </div>
+                                    <hr>
+                                    Styling for the area chart can be found in the
+                                    <code>/js/demo/chart-area-demo.js</code> file.
+                                </div>
+                            </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-body" style="height: 300px;">
-                                    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-                                    <canvas id="userFrequencyChart" width="300" height="100"></canvas>
-                                    <script src="{{ url_for('static', filename='js/graphingIndex.js') }}"></script>
+                            <!-- Bar Chart -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-bar">
+                                        <canvas id="myBarChart"></canvas>
+                                    </div>
+                                    <hr>
+                                    Styling for the bar chart can be found in the
+                                    <code>/js/demo/chart-bar-demo.js</code> file.
+                                </div>
+                            </div>
+
+                        </div>
+
+                                            <!-- Pie Chart -->
+                        <div class="col-xl-4 col-lg-5">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Forklift Distribution</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4">
+                                        <canvas id="forkliftPieChart"></canvas>
+                                    </div>
+                                    <hr>
+                                    Styling for the bar chart can be found in the
+                                    <code>/js/demo/chart-bar-demo.js</code> file.
                                 </div>
                             </div>
                         </div>
-                        </div>
-                     <!-- Page Heading -->
-                     <h1 class="h3 mb-2 text-gray-800">General Stock Charts</h1>
-                     <p class="mb-4">Chart.js is a third party plugin that is used to generate the charts in this theme.
-                         The charts below have been customized - for further customization options, please visit the <a
-                             target="_blank" href="https://www.chartjs.org/docs/latest/">official Chart.js
-                             documentation</a>.</p>
- 
-                     <!-- Content Row -->
-                     <div class="row">
- 
-                         <div class="col-xl-8 col-lg-7">
- 
-                             <!-- Area Chart -->
-                             <div class="card shadow mb-4">
-                                 <div class="card-header py-3">
-                                     <h6 class="m-0 font-weight-bold text-primary">Area Chart</h6>
-                                 </div>
-                                 <div class="card-body">
-                                     <div class="chart-area">
-                                         <canvas id="myAreaChart"></canvas>
-                                     </div>
-                                     <hr>
-                                     Styling for the area chart can be found in the
-                                     <code>/js/demo/chart-area-demo.js</code> file.
-                                 </div>
-                             </div>
- 
-                             <!-- Bar Chart -->
-                             <div class="card shadow mb-4">
-                                 <div class="card-header py-3">
-                                     <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
-                                 </div>
-                                 <div class="card-body">
-                                     <div class="chart-bar">
-                                         <canvas id="myBarChart"></canvas>
-                                     </div>
-                                     <hr>
-                                     Styling for the bar chart can be found in the
-                                     <code>/js/demo/chart-bar-demo.js</code> file.
-                                 </div>
-                             </div>
- 
-                         </div>
- 
-                         <!-- Donut Chart -->
-                         <div class="col-xl-4 col-lg-5">
-                             <div class="card shadow mb-4">
-                                 <!-- Card Header - Dropdown -->
-                                 <div class="card-header py-3">
-                                     <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
-                                 </div>
-                                 <!-- Card Body -->
-                                 <div class="card-body">
-                                     <div class="chart-pie pt-4">
-                                         <canvas id="myPieChart"></canvas>
-                                     </div>
-                                     <hr>
-                                     Styling for the donut chart can be found in the
-                                     <code>/js/demo/chart-pie-demo.js</code> file.
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
- 
+                    </div>
+
+                        
+
                  </div>
                  <!-- /.container-fluid -->
  
@@ -358,19 +333,17 @@
          </div>
      </div>
  
-     <script src="{{ url_for('static', filename='bootstrap/vendor/jquery/jquery.min.js') }}"></script>
      <!-- Bootstrap core JavaScript-->
-     <!-- <script src="bootstrap/static/vendor/jquery/jquery.min.js"></script> -->
-     <!-- <script src="bootstrap/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
-     <script src="{{ url_for('static', filename='bootstrap/vendor/jquery/jquery.min.js') }}"></script>
+     <script src="{{url_for('static',filename='bootstrap/vendor/jquery/jquery.min.js')}}"></script>
      <script src="{{ url_for('static', filename='bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-
-     <!-- Core plugin JavaScript-->
-     <script src="{{url_for('static', filename='bootstrap/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
+     <script src="{{url_for('static',filename='bootstrap/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
+     <script src="{{url_for('static',filename='bootstrap/js/sb-admin-2.min.js')}}"></script>
+     <script src="{{url_for('static',filename='bootstrap/vendor/datatables/jquery.dataTables.min.js')}}"></script>
+     <script src="{{url_for('static',filename='bootstrap/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
  
-     <!-- Custom scripts for all pages-->
-     <script src="{{url_for('static', filename='bootstrap/js/sb-admin-2.min.js')}}"></script>
- 
+     <!-- Page level custom scripts -->
+     <script src="{{url_for('static',filename='bootstrap/js/demo/datatables-demo.js')}}"></script>
+     <!-- Custom scripts for all pages--> 
      <!-- Page level plugins -->
      <script src="{{url_for('static', filename='bootstrap/vendor/chart.js/Chart.min.js')}}"></script>
  
@@ -379,5 +352,5 @@
      <script src="{{url_for('static', filename='bootstrap/js/demo/chart-pie-demo.js')}}"></script>
      
     <script src="{{url_for('static', filename='bootstrap/js/demo/chart-bar-demo.js')}}"></script>
-    </body>
+</table>
 </html>

@@ -99,6 +99,22 @@ def forklifts():
 
     return render_template('forklifts.html', forklifts=forklifts_data, users=users_data)
 
+@app.route('/forkliftsCharts')
+def forkliftsCharts():
+    # Fetch data from the Forklifts endpoint
+    response_forklifts = requests.get(FORKLIFTS_API, verify=False)
+    if response_forklifts.status_code == 200:
+        forklifts_data = response_forklifts.json().get('entities', [])
+    else:
+        forklifts_data = []
+    # Fetch user data from the provided API
+    response_users = requests.get(USERS_API, verify=False)
+    if response_users.status_code == 200:
+        users_data = response_users.json().get('users', [])
+    else:
+        users_data = []
+
+    return render_template('forkliftCharts.html', forklifts=forklifts_data, users=users_data)
 
 # Update Forklift
 @app.route('/editForklifts/<string:id>', methods=['GET', 'POST'])
