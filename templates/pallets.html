@@ -223,7 +223,60 @@
                      </li>
  
                  </ul>
- 
+
+                 <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const showBarcodeButtons = document.querySelectorAll('.show-barcode-button');
+                    
+                        showBarcodeButtons.forEach(function (button) {
+                            button.addEventListener('click', function () {
+                                const palletId = button.getAttribute('data-pallet-id');
+                    
+                                // Create a new barcode image element
+                                const barcodeImage = document.createElement('img');
+                                barcodeImage.id = 'barcode-image';
+                    
+                                // Generate barcode and set its value
+                                JsBarcode(barcodeImage, palletId, {
+                                    format: 'CODE128',
+                                    displayValue: true
+                                });
+                    
+                                // Create a popup/modal and add barcode image to it
+                                const modal = document.createElement('div');
+                                modal.classList.add('modal');
+                    
+                                // Apply CSS styles to the modal (customize the styles as needed)
+                                modal.style.width = '300px';
+                                modal.style.padding = '20px';
+                                modal.style.border = '1px solid #ccc';
+                                modal.style.backgroundColor = '#fff';
+                                modal.style.position = 'fixed';
+                                modal.style.top = '50%';
+                                modal.style.left = '50%';
+                                modal.style.transform = 'translate(-50%, -50%)';
+                                modal.style.zIndex = '1000';
+                    
+                                modal.innerHTML = '<div class="modal-content"><span class="close">&times;</span></div>';
+                                modal.querySelector('.modal-content').appendChild(barcodeImage);
+                                document.body.appendChild(modal);
+                    
+                                // Display the popup/modal
+                                modal.style.display = 'block';
+                    
+                                // Close the popup when clicking the close button
+                                modal.querySelector('.close').addEventListener('click', function () {
+                                    modal.style.display = 'none';
+                                });
+                            });
+                        });
+                    });
+                    </script>
+                    
+                    
+                
+                
+
              </nav>
              <!-- End of Topbar -->
                  <!-- Begin Page Content -->
@@ -234,39 +287,40 @@
                              <h6 class="m-0 font-weight-bold text-primary">Pallet Tables</h6>
                          </div>
                          <div class="card-body">
-                             <div class="table-responsive">
-                                 <table border="1" class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                     <thead>
+                            <div class="table-responsive">
+                                <table border="1" class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
                                         <tr>
                                             <th>ID</th>
                                             <th>Pallet State</th>
                                             <th>Pallet Location</th>
-                                            <th>Actions</th>  <!-- Add a new column for actions -->
+                                            <th>Actions</th>
                                         </tr>
-                                     </thead>
-                                     <tfoot>
+                                    </thead>
+                                    <tfoot>
                                         <tr>
                                             <th>ID</th>
                                             <th>Pallet State</th>
                                             <th>Pallet Location</th>
-                                            <th>Actions</th>  <!-- Add a new column for actions -->
+                                            <th>Actions</th>
                                         </tr>
-                                     </tfoot>
-                                     <tbody>
+                                    </tfoot>
+                                    <tbody>
                                         {% for pallet in pallets %}
                                         <tr>
-                                            <td>{{ pallet.id }}</td>
+                                            <td class="pallet-id"><b>{{ pallet.id }}</b></td>
                                             <td>{{ pallet.state }}</td>
                                             <td>{{ pallet.location }}</td>
                                             <td>
+                                                <button class="show-barcode-button" data-pallet-id="{{ pallet.id }}">Show Barcode</button>
                                                 <a href="{{ url_for('edit_pallet', id=pallet.id) }}">Edit</a> | 
                                                 <a href="{{ url_for('delete_pallet', id=pallet.id) }}">Delete</a>
                                             </td>
                                         </tr>
                                         {% endfor %}
-                                     </tbody>
-                                 </table>
-                             </div>
+                                    </tbody>
+                                </table>
+                            </div>                            
                          </div>
                      </div>
  
@@ -324,6 +378,7 @@
     <script src="{{url_for('static',filename='bootstrap/vendor/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{url_for('static',filename='bootstrap/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
     <script src="{{url_for('static',filename='bootstrap/js/demo/datatables-demo.js')}}"></script>
-    <script src="{{ url_for('static', filename='bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/JsBarcode.all.min.js') }}"></script>
+
 </table>
 </html>
