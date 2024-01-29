@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, abort
 import requests
 
 app = Flask(__name__)
@@ -25,7 +25,16 @@ def index():
     else:
         users_data = []
 
+    # Check if both forklifts_data and users_data are empty, indicating a 404 error
+    if not forklifts_data and not users_data:
+        abort(404)
+
     return render_template('index.html', forklifts=forklifts_data, users=users_data)
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404.html'), 404
+
 
 @app.route('/user/<string:user_id>')
 def view_user(user_id):
@@ -73,19 +82,23 @@ def create():
     # Display a form for creating new data
     return render_template('createForklift.html')
 
-# List Forklifts
 @app.route('/forklifts')
 def forklifts():
     # Fetch data from the Forklifts endpoint
-    response = requests.get(FORKLIFTS_API, verify=False)
-    if response.status_code == 200:
-        data = response.json()
-        forklifts_data = data.get('entities', [])
+    response_forklifts = requests.get(FORKLIFTS_API, verify=False)
+    if response_forklifts.status_code == 200:
+        forklifts_data = response_forklifts.json().get('entities', [])
     else:
         forklifts_data = []
+    # Fetch user data from the provided API
+    response_users = requests.get(USERS_API, verify=False)
+    if response_users.status_code == 200:
+        users_data = response_users.json().get('users', [])
+    else:
+        users_data = []
 
-    # Render data in an HTML template
-    return render_template('forklifts.html', forklifts=forklifts_data)
+    return render_template('forklifts.html', forklifts=forklifts_data, users=users_data)
+
 
 # Update Forklift
 @app.route('/editForklifts/<string:id>', methods=['GET', 'POST'])
@@ -142,18 +155,24 @@ def delete(id):
     # Display a confirmation page for deleting the data
     return render_template('deleteForklift.html', id=id)
 
-# Fetch Pallets Data (Read)
 @app.route('/pallets')
 def pallets():
     # Fetch data from the Pallets endpoint
     pallet_response = requests.get(PALLETS_API, verify=False)
     if pallet_response.status_code == 200:
-        data = pallet_response.json()
-        pallets_data = data.get('pallets', [])
+        pallets_data = pallet_response.json().get('pallets', [])
     else:
         pallets_data = []
 
-    return render_template('pallets.html', pallets=pallets_data)
+    # Fetch user data from the provided API
+    response_users = requests.get(USERS_API, verify=False)
+    if response_users.status_code == 200:
+        users_data = response_users.json().get('users', [])
+    else:
+        users_data = []
+
+    return render_template('pallets.html', pallets=pallets_data, users=users_data)
+
 
 # Create Pallet Data (Create)
 @app.route('/createPallet', methods=['GET', 'POST'])
@@ -215,16 +234,24 @@ def delete_pallet(id):
     # Display a confirmation page for deleting the pallet data
     return render_template('deletePallet.html', id=id)
 
-# List Shelves
 @app.route('/shelves')
 def shelves():
-    response = requests.get(SHELVES_API, verify=False)
-    if response.status_code == 200:
-        data = response.json()
-        shelves_data = data.get('entities', [])
+    # Fetch data from the Shelves endpoint
+    response_shelves = requests.get(SHELVES_API, verify=False)
+    if response_shelves.status_code == 200:
+        shelves_data = response_shelves.json().get('entities', [])
     else:
         shelves_data = []
-    return render_template('shelves.html', shelves=shelves_data)
+
+    # Fetch user data from the provided API
+    response_users = requests.get(USERS_API, verify=False)
+    if response_users.status_code == 200:
+        users_data = response_users.json().get('users', [])
+    else:
+        users_data = []
+
+    return render_template('shelves.html', shelves=shelves_data, users=users_data)
+
 
 # Create Shelf
 @app.route('/createShelf', methods=['GET', 'POST'])
