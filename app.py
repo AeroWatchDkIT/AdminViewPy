@@ -74,7 +74,7 @@ def create():
             }
         }
         # Send a POST request to your API to create the new data entry
-        response = requests.post(FORKLIFTS_API, json={'entities': [new_data]}, verify=False)
+        response = requests.post(FORKLIFTS_API, json=new_data, verify=False)
         if response.status_code == 201:  # Assuming a successful creation status code
             # Redirect to the data listing page after successful creation
             return redirect(url_for('index'))
