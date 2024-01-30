@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/sb-admin-2.css') }}">
-    <title>PalletSync - Pallet Tables</title>
+    <title>PalletSync - Pallet Charts</title>
     <!-- Custom fonts for this template -->
     <link href="{{url_for('static', filename='bootstrap/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
@@ -18,7 +18,6 @@
 
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
- 
          <!-- Sidebar - Brand -->
          <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
              <div class="sidebar-brand-icon rotate-n-15">
@@ -63,6 +62,9 @@
  
          <!-- Divider -->
          <hr class="sidebar-divider">
+         <div class="sidebar-heading">
+            Charts
+        </div>
  
         <!-- Nav Item - Charts -->
         <li class="nav-item">
@@ -70,11 +72,6 @@
                 <i class="fas fa-fw fa-chart-area"></i>
                 <span>Forklift Charts</span></a>
         </li>
-       <li class="nav-item">
-           <a class="nav-link" href="/palletCharts">
-               <i class="fas fa-fw fa-chart-area"></i>
-               <span>Pallet Charts</span></a>
-       </li>
         
         <hr class="sidebar-divider">
         <div class="sidebar-heading">
@@ -83,9 +80,15 @@
  
          <!-- Nav Item - Tables -->
          <li class="nav-item">
-             <a class="nav-link" href="/forklifts">
+            <a class="nav-link" href="/forklifts">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Forklift Table</span></a>
+        </li>
+         <!-- Nav Item - Tables -->
+         <li class="nav-item">
+             <a class="nav-link" href="/pallets">
                  <i class="fas fa-fw fa-table"></i>
-                 <span>Forklift Tables</span></a>
+                 <span>Pallet Tables</span></a>
          </li>
  
           <!-- Nav Item - Tables -->
@@ -114,27 +117,11 @@
  
              <!-- Topbar -->
              <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
- 
+                <h1>Pallet Charts</h1>
                  <!-- Sidebar Toggle (Topbar) -->
                  <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                      <i class="fa fa-bars"></i>
                  </button>
- 
-                 <!-- Topbar Search -->
-                 <form action="/forklifts" method="get"
-                     class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                     <div class="input-group">
-                         <input name="search" type="text" class="form-control bg-light border-0 small" placeholder="Search for {Not Working}"
-                             aria-label="Search" aria-describedby="basic-addon2">
-                         <div class="input-group-append">
-                             <button class="btn btn-primary" type="submit">
-                                 <i class="fas fa-search fa-sm"></i>
-                             </button>
-                         </div>
-                         <a class="btn m-0 font-weight-bold text-center" href="/createPallet">Create Pallet</a>
-
-                     </div>
-                 </form>
                  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
                  <!-- Topbar Navbar -->
                  <ul class="navbar-nav ml-auto">
@@ -225,110 +212,73 @@
                              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                              <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin Account</span>
                         </a>
-                     </li>
- 
+                    </li>
                  </ul>
-
-                 <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                        const showBarcodeButtons = document.querySelectorAll('.show-barcode-button');
-                    
-                        showBarcodeButtons.forEach(function (button) {
-                            button.addEventListener('click', function () {
-                                const palletId = button.getAttribute('data-pallet-id');
-                    
-                                // Create a new barcode image element
-                                const barcodeImage = document.createElement('img');
-                                barcodeImage.id = 'barcode-image';
-                    
-                                // Generate barcode and set its value
-                                JsBarcode(barcodeImage, palletId, {
-                                    format: 'CODE128',
-                                    displayValue: true
-                                });
-                    
-                                // Create a popup/modal and add barcode image to it
-                                const modal = document.createElement('div');
-                                modal.classList.add('modal');
-                    
-                                // Apply CSS styles to the modal (customize the styles as needed)
-                                modal.style.width = '300px';
-                                modal.style.padding = '20px';
-                                modal.style.border = '1px solid #ccc';
-                                modal.style.backgroundColor = '#fff';
-                                modal.style.position = 'fixed';
-                                modal.style.top = '50%';
-                                modal.style.left = '50%';
-                                modal.style.transform = 'translate(-50%, -50%)';
-                                modal.style.zIndex = '1000';
-                    
-                                modal.innerHTML = '<div class="modal-content"><span class="close">&times;</span></div>';
-                                modal.querySelector('.modal-content').appendChild(barcodeImage);
-                                document.body.appendChild(modal);
-                    
-                                // Display the popup/modal
-                                modal.style.display = 'block';
-                    
-                                // Close the popup when clicking the close button
-                                modal.querySelector('.close').addEventListener('click', function () {
-                                    modal.style.display = 'none';
-                                });
-                            });
-                        });
-                    });
-                    </script>
-                    
-                    
-                
-                
-
+ 
              </nav>
              <!-- End of Topbar -->
                  <!-- Begin Page Content -->
-                 <div class="container-fluid">             
-                     <!-- DataTales Example -->
-                     <div class="card shadow mb-4">
-                         <div class="card-header py-3">
-                             <h6 class="m-0 font-weight-bold text-primary">Pallet Tables</h6>
-                         </div>
-                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table border="1" class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Pallet State</th>
-                                            <th>Pallet Location</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Pallet State</th>
-                                            <th>Pallet Location</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </tfoot>
-                                    <tbody>
-                                        {% for pallet in pallets %}
-                                        <tr>
-                                            <td class="pallet-id">{{ pallet.id }}</td>
-                                            <td>{{ pallet.state }}</td>
-                                            <td>{{ pallet.location }}</td>
-                                            <td>
-                                                <button class="show-barcode-button" data-pallet-id="{{ pallet.id }}">Show Barcode</button>
-                                                <a href="{{ url_for('edit_pallet', id=pallet.id) }}">Edit</a> | 
-                                                <a href="{{ url_for('delete_pallet', id=pallet.id) }}">Delete</a>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>                            
-                         </div>
-                     </div>
+                 <div class="container-fluid"> 
+                    
+                      <!-- Content Row -->
+                      <div class="row">
  
+                        <div class="col-xl-8 col-lg-7">
+
+                            <!-- Area Chart -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Area Chart</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <canvas id="myAreaChart"></canvas>
+                                    </div>
+                                    <hr>
+                                    Styling for the area chart can be found in the
+                                    <code>/js/demo/chart-area-demo.js</code> file.
+                                </div>
+                            </div>
+
+                            <!-- Bar Chart -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-bar">
+                                        <canvas id="myBarChart"></canvas>
+                                    </div>
+                                    <hr>
+                                    Styling for the bar chart can be found in the
+                                    <code>/js/demo/chart-bar-demo.js</code> file.
+                                </div>
+                            </div>
+
+                        </div>
+
+                                            <!-- Pie Chart -->
+                        <div class="col-xl-4 col-lg-5">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Forklift Distribution</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4">
+                                        <canvas id="forkliftPieChart"></canvas>
+                                    </div>
+                                    <hr>
+                                    Total Number of Registered vs Non-Registered Users
+                                    <code>/js/demo/chart-bar-demo.js</code> file.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                        
+
                  </div>
                  <!-- /.container-fluid -->
  
@@ -352,7 +302,7 @@
      <!-- End of Page Wrapper -->
  
      <!-- Scroll to Top Button-->
-     <a class="scroll-to-top rounded" href="/pallets">
+     <a class="scroll-to-top rounded" href="#page-top">
          <i class="fas fa-angle-up"></i>
      </a>
  
@@ -376,27 +326,24 @@
          </div>
      </div>
  
+     <!-- Bootstrap core JavaScript-->
+     <script src="{{url_for('static',filename='bootstrap/vendor/jquery/jquery.min.js')}}"></script>
+     <script src="{{ url_for('static', filename='bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+     <script src="{{url_for('static',filename='bootstrap/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
+     <script src="{{url_for('static',filename='bootstrap/js/sb-admin-2.min.js')}}"></script>
+     <script src="{{url_for('static',filename='bootstrap/vendor/datatables/jquery.dataTables.min.js')}}"></script>
+     <script src="{{url_for('static',filename='bootstrap/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
  
-    <script src="{{ url_for('static', filename='js/JsBarcode.all.min.js') }}"></script>
-    <!-- Bootstrap core JavaScript-->
-    <script src="{{url_for('static',filename='bootstrap/vendor/jquery/jquery.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{url_for('static',filename='bootstrap/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
-    <script src="{{url_for('static',filename='bootstrap/js/sb-admin-2.min.js')}}"></script>
-    <script src="{{url_for('static',filename='bootstrap/vendor/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{url_for('static',filename='bootstrap/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="{{url_for('static',filename='bootstrap/js/demo/datatables-demo.js')}}"></script>
-    <!-- Custom scripts for all pages--> 
-    <!-- Page level plugins -->
-    <script src="{{url_for('static', filename='bootstrap/vendor/chart.js/Chart.min.js')}}"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="{{url_for('static', filename='bootstrap/js/demo/chart-area-demo.js')}}"></script>
-    <script src="{{url_for('static', filename='bootstrap/js/demo/ForkliftPieChart.js')}}"></script>
-
+     <!-- Page level custom scripts -->
+     <script src="{{url_for('static',filename='bootstrap/js/demo/datatables-demo.js')}}"></script>
+     <!-- Custom scripts for all pages--> 
+     <!-- Page level plugins -->
+     <script src="{{url_for('static', filename='bootstrap/vendor/chart.js/Chart.min.js')}}"></script>
+ 
+     <!-- Page level custom scripts -->
+     <script src="{{url_for('static', filename='bootstrap/js/demo/chart-area-demo.js')}}"></script>
+     <script src="{{url_for('static', filename='bootstrap/js/demo/ForkliftPieChart.js')}}"></script>
+     
     <script src="{{url_for('static', filename='bootstrap/js/demo/chart-bar-demo.js')}}"></script>
-
 </table>
 </html>

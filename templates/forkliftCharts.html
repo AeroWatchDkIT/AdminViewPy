@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/sb-admin-2.css') }}">
-    <title>PalletSync - Forklifts Tables</title>
+    <title>PalletSync - Forklifts Charts</title>
     <!-- Custom fonts for this template -->
     <link href="{{url_for('static', filename='bootstrap/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
@@ -63,12 +63,15 @@
  
          <!-- Divider -->
          <hr class="sidebar-divider">
+         <div class="sidebar-heading">
+            Charts
+        </div>
  
         <!-- Nav Item - Charts -->
         <li class="nav-item">
-            <a class="nav-link" href="">
+            <a class="nav-link" href="/palletCharts">
                 <i class="fas fa-fw fa-chart-area"></i>
-                <span>Forklift Charts</span></a>
+                <span>Pallet Charts</span></a>
         </li>
         
         <hr class="sidebar-divider">
@@ -76,6 +79,12 @@
            Tables
        </div>
  
+         <!-- Nav Item - Tables -->
+         <li class="nav-item">
+            <a class="nav-link" href="/forklifts">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Forklift Table</span></a>
+        </li>
          <!-- Nav Item - Tables -->
          <li class="nav-item">
              <a class="nav-link" href="/pallets">
@@ -109,36 +118,17 @@
  
              <!-- Topbar -->
              <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
- 
+                <h1>Forklift Charts</h1>
+
                  <!-- Sidebar Toggle (Topbar) -->
                  <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                      <i class="fa fa-bars"></i>
                  </button>
- 
-                 <!-- Topbar Search -->
-                 <form action="/forklifts" method="get"
-                     class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                     <div class="input-group">
-                         <input name="search" type="text" class="form-control bg-light border-0 small" placeholder="Search for term..."
-                             aria-label="Search" aria-describedby="basic-addon2">
-                         <div class="input-group-append">
-                             <button class="btn btn-primary" type="submit">
-                                 <i class="fas fa-search fa-sm"></i>
-                             </button>
-                         </div>
-                         <a class="btn m-0 font-weight-bold text-center" href="/createForklift">Create Forklift</a>
-                     </div>
-                 </form>
                  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
                  <!-- Topbar Navbar -->
                  <ul class="navbar-nav ml-auto">
- 
                      <!-- Nav Item - Search Dropdown (Visible Only XS) -->
                      <li class="nav-item dropdown no-arrow d-sm-none">
-                         <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                             <i class="fas fa-search fa-fw"></i>
-                         </a>
                          <!-- Dropdown - Messages -->
                          <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
                              aria-labelledby="searchDropdown">
@@ -349,7 +339,7 @@
  
      <!-- Page level custom scripts -->
      <script src="{{url_for('static', filename='bootstrap/js/demo/chart-area-demo.js')}}"></script>
-     <script src="{{url_for('static', filename='bootstrap/js/demo/chart-pie-demo.js')}}"></script>
+     <script src="{{url_for('static', filename='bootstrap/js/demo/ForkliftPieChart.js')}}"></script>
      
     <script src="{{url_for('static', filename='bootstrap/js/demo/chart-bar-demo.js')}}"></script>
 </table>
