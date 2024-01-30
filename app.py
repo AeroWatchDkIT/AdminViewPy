@@ -209,7 +209,7 @@ def edit_pallet(id):
     if request.method == 'POST':
         # Process the form data and update the existing pallet data entry using the API
         updated_pallet_data = {
-            'id': id,
+            'id': request.form['id'],  # You can choose to update the ID or not
             'state': int(request.form['state']),
             'location': request.form['location']
         }
@@ -221,6 +221,9 @@ def edit_pallet(id):
 
     # Display a form for editing the existing pallet data
     return render_template('editPallet.html', pallet=pallet_entry)
+
+
+
 
 # Delete Pallet Data (Delete)
 @app.route('/deletePallet/<string:id>', methods=['GET', 'POST'])

@@ -3,18 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>User Details</title>
+    <!-- Add Bootstrap CSS and JavaScript links here -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>User Details</h1>
-    {% if user %}
-        <p>ID: {{ user.id }}</p>
-        <p>First Name: {{ user.firstName }}</p>
-        <p>Last Name: {{ user.lastName }}</p>
-        <p>User Type: {{ user.userType }}</p>
-        <p>Forklift Certified: {{ user.forkliftCertified }}</p>
-        <p>Incorrect Pallet Placements: {{ user.incorrectPalletPlacements }}</p>
-    {% else %}
-        <p>User not found or an error occurred.</p>
-    {% endif %}
+    <div class="container mt-5">
+        <h1 class="display-4">User Details</h1>
+        {% if user %}
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text"><strong>ID:</strong> {{ user.id }}</p>
+                    <p class="card-text"><strong>First Name:</strong> {{ user.firstName }}</p>
+                    <p class="card-text"><strong>Last Name:</strong> {{ user.lastName }}</p>
+                    <p class="card-text"><strong>User Type:</strong> {{ user.userType }}</p>
+                    <p class="card-text"><strong>Forklift Certified:</strong> {{ user.forkliftCertified }}</p>
+                    <p class="card-text"><strong>Incorrect Pallet Placements:</strong> {{ user.incorrectPalletPlacements }}</p>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-danger mt-3" role="alert">
+                User not found or an error occurred.
+            </div>
+        {% endif %}
+    </div>
 </body>
 </html>
