@@ -56,22 +56,6 @@ def create():
         # Process the form data and create a new data entry using the API
         new_data = {
             'id': request.form['id'],
-            'lastUserId': request.form['lastUserId'],
-            'lastUser': {
-                'id': request.form['lastUserId'],
-                'userType': int(request.form['userType']),  # Adjust as needed
-                'firstName': request.form['firstName'],
-                'lastName': request.form['lastName'],
-                'passcode': request.form['passcode'],
-                'forkliftCertified': True if request.form['forkliftCertified'] == 'true' else False,
-                'incorrectPalletPlacements': int(request.form['incorrectPalletPlacements'])
-            },
-            'lastPalletId': request.form['lastPalletId'],
-            'lastPallet': {
-                'id': request.form['lastPalletId'],
-                'state': int(request.form['state']),
-                'location': request.form['location']
-            }
         }
         # Send a POST request to your API to create the new data entry
         response = requests.post(FORKLIFTS_API, json=new_data, verify=False)
@@ -132,22 +116,6 @@ def edit(id):
         # Process the form data and update the existing data entry using the API
         updated_data = {
             'id': request.form['id'],
-            'lastUserId': request.form['lastUserId'],
-            'lastUser': {
-                'id': request.form['lastUserId'],
-                'userType': 0,  # Adjust as needed
-                'firstName': request.form['firstName'],
-                'lastName': request.form['lastName'],
-                'passcode': request.form['passcode'],
-                'forkliftCertified': True if request.form['forkliftCertified'] == 'true' else False,
-                'incorrectPalletPlacements': int(request.form['incorrectPalletPlacements'])
-            },
-            'lastPalletId': request.form['lastPalletId'],
-            'lastPallet': {
-                'id': request.form['lastPalletId'],
-                'state': int(request.form['state']),
-                'location': request.form['location']
-            }
         }
         # Send a PUT request to your API to update the data entry
         response = requests.put(f'{FORKLIFTS_API}/{id}', json=updated_data, verify=False)
@@ -166,7 +134,7 @@ def delete(id):
         response = requests.delete(f'{FORKLIFTS_API}/{id}', verify=False)
         if response.status_code == 204:  # Assuming a successful deletion status code
             # Redirect to the data listing page after successful deletion
-            return redirect(url_for('index'))
+            return redirect(url_for('forklifts'))
 
     # Display a confirmation page for deleting the data
     return render_template('deleteForklift.html', id=id)
@@ -189,6 +157,23 @@ def pallets():
 
     return render_template('pallets.html', pallets=pallets_data, users=users_data)
 
+@app.route('/palletCharts')
+def palletCharts():
+    # Fetch data from the Pallets endpoint
+    pallet_response = requests.get(PALLETS_API, verify=False)
+    if pallet_response.status_code == 200:
+        pallets_data = pallet_response.json().get('pallets', [])
+    else:
+        pallets_data = []
+
+    # Fetch user data from the provided API
+    response_users = requests.get(USERS_API, verify=False)
+    if response_users.status_code == 200:
+        users_data = response_users.json().get('users', [])
+    else:
+        users_data = []
+
+    return render_template('palletCharts.html', pallets=pallets_data, users=users_data)
 
 # Create Pallet Data (Create)
 @app.route('/createPallet', methods=['GET', 'POST'])
