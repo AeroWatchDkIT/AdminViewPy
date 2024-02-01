@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, abort
+from flask import Flask, render_template, request, redirect, url_for, abort, g
 import requests
 
 app = Flask(__name__)
@@ -25,15 +25,20 @@ def index():
     else:
         users_data = []
 
-    # Check if both forklifts_data and users_data are empty, indicating a 404 error
+    # Check if both forklifts_data and users_data are empty
     if not forklifts_data and not users_data:
+        # Store users_data in g before aborting
+        g.users_data = users_data
         abort(404)
 
     return render_template('index.html', forklifts=forklifts_data, users=users_data)
 
+
 @app.errorhandler(404)
 def not_found(error):
-    return render_template('404.html'), 404
+    # Retrieve users_data from g, defaulting to an empty list if not set
+    users_data = getattr(g, 'users_data', [])
+    return render_template('404.html', users=users_data), 404
 
 
 @app.route('/user/<string:user_id>')
