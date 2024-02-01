@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, abort, g
+from flask import Flask, render_template, request, redirect, url_for, abort, g, make_response
 import requests
 
 app = Flask(__name__)
@@ -25,20 +25,26 @@ def index():
     else:
         users_data = []
 
-    # Check if both forklifts_data and users_data are empty
     if not forklifts_data and not users_data:
-        # Store users_data in g before aborting
-        g.users_data = users_data
-        abort(404)
+        # Directly render the 404 template with user data and set the status code to 404
+        response = make_response(render_template('404.html', users=users_data), 404)
+        return response
 
+    # Render the index page with forklift and user data if both datasets are present
     return render_template('index.html', forklifts=forklifts_data, users=users_data)
-
 
 @app.errorhandler(404)
 def not_found(error):
-    # Retrieve users_data from g, defaulting to an empty list if not set
-    users_data = getattr(g, 'users_data', [])
+    # Fetch user data from the same API as in the index route
+    response_users = requests.get(USERS_API, verify=False)
+    if response_users.status_code == 200:
+        users_data = response_users.json().get('users', [])
+    else:
+        users_data = []
+
+    # Render the custom 404 page with user data
     return render_template('404.html', users=users_data), 404
+
 
 
 @app.route('/user/<string:user_id>')
