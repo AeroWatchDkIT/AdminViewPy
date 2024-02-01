@@ -112,9 +112,10 @@
      <!-- Content Wrapper -->
      <div id="content-wrapper" class="d-flex flex-column">
  
+        
          <!-- Main Content -->
          <div id="content">
- 
+            
              <!-- Topbar -->
              <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
  
@@ -237,9 +238,74 @@
                  <!-- Begin Page Content -->
                  <div class="container-fluid">
 
-                    <h1>Welcome to Admin Page</h1>
-                    <p>This is the homepage of your application. You can use this page to provide a brief introduction or summary of what your application does.</p>               
-                     <!-- Content Row -->
+                    <div class="row">
+
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            Total Misplaced Pallets</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalMisplacedPallets">
+                                            0
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-pallet fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            var totalMisplacedPallets = 0;
+                            {% for user in users %}
+                                {% if user.incorrectPalletPlacements is defined %}
+                                    totalMisplacedPallets += parseInt('{{ user.incorrectPalletPlacements }}');
+                                {% endif %}
+                            {% endfor %}
+                            document.getElementById('totalMisplacedPallets').textContent = totalMisplacedPallets;
+                        });
+                    </script>
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                            Total Count of Users</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalCountUsers">
+                                            0 <!-- Initial value, will be updated by JavaScript -->
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-user fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            var totalCountUsers = 0;
+                            {% for user in users %}
+                                {% if user.id is defined %}
+                                    totalCountUsers++;
+                                {% endif %}
+                            {% endfor %}
+                            document.getElementById('totalCountUsers').textContent = totalCountUsers;
+                        });
+                    </script>
+
+
+                    </div>
+
+                   <!-- Content Row -->
                      <div class="row">
 
                         <div class="col-xl-8 col-lg-7">
@@ -248,6 +314,8 @@
                                     <h6 class="m-0 font-weight-bold text-primary">Random Content</h6>
                                 </div>
                                 <div class="card-body">
+                                    <h1>Welcome to Admin Page</h1>
+                                    <p>This is the homepage of your application. You can use this page to provide a brief introduction or summary of what your application does.</p>                               
                                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla eget ante id turpis auctor congue.</p>
                                     <p>Maecenas sit amet tellus vel eros feugiat facilisis vel ac orci.</p>
                                     <ul>

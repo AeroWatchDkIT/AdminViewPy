@@ -295,6 +295,7 @@ def editShelf(id):
     
     if request.method == 'POST':
         updated_data = {
+            'id': request.form['id'],
             'palletId': request.form['palletId'],
             'location': request.form['location']
         }
@@ -315,4 +316,5 @@ def deleteShelf(id):
     return render_template('deleteShelf.html', id=id)
 
 if __name__ == '__main__':
+    # app.run(host='0.0.0.0', port=5000)
     app.run(debug=True)
