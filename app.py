@@ -69,14 +69,23 @@ def not_found(error):
 def view_user(user_id):
     # Fetch the user data by user_id from your API or database
     response = requests.get(f'{USERS_API}/{user_id}', verify=False)
+    response_users = requests.get(USERS_API, verify=False)
     
+    if response_users.status_code == 200:
+        userData = response_users.json().get('users', [])
+    else:
+        # Handle the case where the user is not found or an error occurs
+        userData = None 
+
     if response.status_code == 200:
         user = response.json()
     else:
         # Handle the case where the user is not found or an error occurs
         user = None
 
-    return render_template('viewUsers.html', user=user)
+
+
+    return render_template('viewUsers.html', user=user,userLoop=userData)
 
 # Create Forklift
 @app.route('/createForklift', methods=['GET', 'POST'])
