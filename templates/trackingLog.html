@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tracking Log</title>
+</head>
+<body>
+    <h1>Tracking Log</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Date and Time</th>
+            <th>Action</th>
+            <th>Pallet ID</th>
+            <th>Pallet State</th>
+            <th>Pallet Location</th>
+            <th>Forklift ID</th>
+            <th>User ID</th>
+        </tr>
+        {% for log_entry in trackingLog %}
+        <tr>
+            <td>{{ log_entry.id }}</td>
+            <td>{{ log_entry.dateTime }}</td>
+            <td>{{ log_entry.action }}</td>
+            <td>{{ log_entry.palletId }}</td>
+            <td>{{ log_entry.palletState }}</td>
+            <td>{{ log_entry.palletLocation }}</td>
+            <td>{{ log_entry.forkliftId }}</td>
+            <td>{{ log_entry.userId }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

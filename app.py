@@ -8,6 +8,7 @@ FORKLIFTS_API = 'https://localhost:7128/Forklifts'
 PALLETS_API = 'https://localhost:7128/Pallets'
 SHELVES_API = 'https://localhost:7128/Shelves'
 USERS_API = 'https://localhost:7128/Users'
+TRACKING_LOG = 'https://localhost:7128/TrackingLogs'
 
 @app.route('/')
 def index():
@@ -32,6 +33,23 @@ def index():
 
     # Render the index page with forklift and user data if both datasets are present
     return render_template('index.html', forklifts=forklifts_data, users=users_data)
+
+@app.route('/trackingLog')
+def trackingLog():
+        # Fetch data from the Forklifts endpoint
+    response_trackingLog = requests.get(TRACKING_LOG, verify=False)
+    if response_trackingLog.status_code == 200:
+        trackingLog_data = response_trackingLog.json().get('entities', [])
+    else:
+        trackingLog_data = []
+
+    response_users = requests.get(USERS_API, verify=False)
+    if response_users.status_code == 200:
+        users_data = response_users.json().get('users', [])
+    else:
+        users_data = []
+    
+    return render_template('trackingLog.html', trackingLog=trackingLog_data, users=users_data)
 
 @app.errorhandler(404)
 def not_found(error):
@@ -316,5 +334,5 @@ def deleteShelf(id):
     return render_template('deleteShelf.html', id=id)
 
 if __name__ == '__main__':
-    # app.run(host='0.0.0.0', port=5000)
+    #app.run(host='0.0.0.0', port=5000)
     app.run(debug=True)
