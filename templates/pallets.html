@@ -12,7 +12,7 @@
     <link rel="icon" href="{{url_for('static',filename='bootstrap/img/PalletSync2Logo.jpg')}}" type="image/x-icon" />
 </head>
 <html>
-
+<body>
     <!-- Page Wrapper -->
     <div id="wrapper">
 
@@ -280,7 +280,35 @@
                     
                     
                 
+                    <script>
+                        // Function to format pallet state
+                        function formatPalletState(palletState) {
+                            switch (palletState) {
+                                case 0:
+                                    return "On Floor";
+                                case 1:
+                                    return "On Forklift";
+                                case 2:
+                                    return "On Shelf";
+                                default:
+                                    return "Unknown";
+                            }
+                        }
                 
+                        // Function to format pallet states in the table
+                        function formatPalletStates() {
+                            const palletStateCells = document.querySelectorAll('.pallet-state-cell');
+                
+                            palletStateCells.forEach(cell => {
+                                const originalPalletState = parseInt(cell.textContent);
+                                const formattedPalletState = formatPalletState(originalPalletState);
+                                cell.textContent = formattedPalletState;
+                            });
+                        }
+                
+                        // Call the formatPalletStates function when the page is loaded
+                        document.addEventListener('DOMContentLoaded', formatPalletStates);
+                    </script>
 
              </nav>
              <!-- End of Topbar -->
@@ -314,7 +342,7 @@
                                         {% for pallet in pallets %}
                                         <tr>
                                             <td class="pallet-id">{{ pallet.id }}</td>
-                                            <td>{{ pallet.state }}</td>
+                                            <td class="pallet-state-cell">{{ pallet.state }}</td>
                                             <td>{{ pallet.location }}</td>
                                             <td>
                                                 <button class="show-barcode-button btn-primary" data-pallet-id="{{ pallet.id }}">Show Barcode</button> |
@@ -375,7 +403,8 @@
              </div>
          </div>
      </div>
- 
+</table>
+
  
     <script src="{{ url_for('static', filename='js/JsBarcode.all.min.js') }}"></script>
     <!-- Bootstrap core JavaScript-->
@@ -397,6 +426,5 @@
     <script src="{{url_for('static', filename='bootstrap/js/demo/ForkliftPieChart.js')}}"></script>
 
     <script src="{{url_for('static', filename='bootstrap/js/demo/chart-bar-demo.js')}}"></script>
-
-</table>
+</body>
 </html>
