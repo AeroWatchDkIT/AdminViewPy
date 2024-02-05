@@ -245,6 +245,8 @@
 
                     <div class="row">
 
+                        
+
                     <div class="col-xl-3 col-md-6 mb-4">
                         <div class="card border-left-primary shadow h-100 py-2">
                             <div class="card-body">
@@ -311,30 +313,21 @@
                     </div>
 
                    <!-- Content Row -->
-                     <div class="row">
 
-                        <div class="col-xl-8 col-lg-7">
+ <!-- Area Chart -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Random Content</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Total Pallet Loss</h6>
                                 </div>
                                 <div class="card-body">
-                                    <h1>Welcome to Admin Page</h1>
-                                    <p>This is the homepage of your application. You can use this page to provide a brief introduction or summary of what your application does.</p>                               
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla eget ante id turpis auctor congue.</p>
-                                    <p>Maecenas sit amet tellus vel eros feugiat facilisis vel ac orci.</p>
-                                    <ul>
-                                        <li>Item 1</li>
-                                        <li>Item 2</li>
-                                        <li>Item 3</li>
-                                    </ul>
-                                    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
-                                    <button class="btn btn-primary">Click Me</button>
+                                    <div class="chart-area">
+                                        <canvas id="myAreaChart"></canvas>
+                                    </div>
+                                    <hr>
                                 </div>
-                            </div>
-                        </div>
+                            </div> 
                         </div>  
-                        </div>  
+                        
                  <!-- /.container-fluid -->
  
              </div>
@@ -396,5 +389,16 @@
  
      <!-- Page level plugins -->
      <script src="{{url_for('static', filename='bootstrap/vendor/chart.js/Chart.min.js')}}"></script>
+          <!-- Page level custom scripts -->
+          <script src="{{url_for('static',filename='bootstrap/js/demo/datatables-demo.js')}}"></script>
+          <!-- Custom scripts for all pages--> 
+          <!-- Page level plugins -->
+          <script src="{{url_for('static', filename='bootstrap/vendor/chart.js/Chart.min.js')}}"></script>
+      
+          <!-- Page level custom scripts -->
+          <script src="{{url_for('static', filename='bootstrap/js/demo/chart-area-demo.js')}}"></script>
+          <script src="{{url_for('static', filename='bootstrap/js/demo/ForkliftPieChart.js')}}"></script>
+          
+         <script src="{{url_for('static', filename='bootstrap/js/demo/chart-bar-demo.js')}}"></script>
     </body>
 </html>
