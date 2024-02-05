@@ -12,9 +12,9 @@ function createPieChart(data) {
   var forkliftPieChart = new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: ["With User ID", "Without User ID"],
+      labels: ["Correct Placements", "Misplaced Pallets"],
       datasets: [{
-        data: [forkliftsWithUserId.length, forkliftsWithoutUserId.length],
+        data: [99, 10],
         backgroundColor: ['#4e73df', '#1cc88a'],
         hoverBackgroundColor: ['#2e59d9', '#17a673'],
         hoverBorderColor: "rgba(234, 236, 244, 1)",
