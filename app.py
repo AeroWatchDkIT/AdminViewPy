@@ -82,10 +82,42 @@ def view_user(user_id):
     else:
         # Handle the case where the user is not found or an error occurs
         user = None
-
-
-
     return render_template('viewUsers.html', user=user,userLoop=userData)
+
+@app.route('/deleteUser/<string:id>', methods=['GET', 'POST'])
+def deleteUser(id):
+    # Directly redirect GET requests to the index to avoid showing the deletion URL.
+    if request.method == 'GET':
+        return redirect(url_for('index'))
+    
+    # Handle POST request: Attempt to delete the user.
+    if request.method == 'POST':
+        response = requests.delete(f'{USERS_API}/{id}', verify=False)
+        if response.status_code == 204:  # Assuming 204 means success
+            return redirect(url_for('index'))
+    
+    # If neither condition is met, it's a fallback, though this should not happen with the above logic.
+    return redirect(url_for('index'))
+
+
+@app.route('/createUser', methods=['GET', 'POST'])
+def createUser():
+    if request.method == 'POST':
+        # Assuming the form data uses the same keys as your data structure
+        new_data = {
+            'id': request.form['id'],
+            'userType': int(request.form['userType']),  # Convert to int as necessary
+            'firstName': request.form['firstName'],
+            'lastName': request.form['lastName'],
+            'passcode': request.form['passcode'],
+            'forkliftCertified': request.form['forkliftCertified'].lower() in ['true', '1', 't', 'y', 'yes'],  # Convert to boolean
+            'incorrectPalletPlacements': int(request.form['incorrectPalletPlacements'])  # Convert to int as necessary
+        }
+        response = requests.post(USERS_API, json=new_data, verify=False)
+        if response.status_code == 201:
+            return redirect(url_for('index'))  # Ensure you have an 'index' route defined
+    return render_template('createUser.html')
+
 
 # Create Forklift
 @app.route('/createForklift', methods=['GET', 'POST'])

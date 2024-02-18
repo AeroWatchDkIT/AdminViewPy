@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create User</title>
+</head>
+<body>
+
+<h2>Create User Form</h2>
+
+<form action="/createUser" method="post">
+    <label for="id">ID:</label><br>
+    <!-- Add pattern attribute for validation -->
+    <input type="text" id="id" name="id" pattern="U-\d{4}" title="ID must be in the format U-xxxx, where xxxx are digits." required><br>
+    <label for="userType">User Type (Numeric):</label><br>
+    <input type="number" id="userType" name="userType" required><br>
+    <label for="firstName">First Name:</label><br>
+    <input type="text" id="firstName" name="firstName" required><br>
+    <label for="lastName">Last Name:</label><br>
+    <input type="text" id="lastName" name="lastName" required><br>
+    <label for="passcode">Passcode:</label><br>
+    <input type="text" id="passcode" name="passcode" required><br>
+    <label for="forkliftCertified">Forklift Certified (true/false):</label><br>
+    <input type="text" id="forkliftCertified" name="forkliftCertified" required><br>
+    <label for="incorrectPalletPlacements">Incorrect Pallet Placements (Numeric):</label><br>
+    <input type="number" id="incorrectPalletPlacements" name="incorrectPalletPlacements" required><br><br>
+    <input type="submit" value="Submit">
+</form>
+
+</body>
+</html>

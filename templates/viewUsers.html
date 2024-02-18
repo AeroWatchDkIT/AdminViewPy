@@ -231,7 +231,7 @@
                          </a>
                          <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                          aria-labelledby="userDropdown">
-                         <a class="dropdown-item" href="#">
+                         <a class="dropdown-item" href="/createUser">
                              <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                              Create Employee
                          </a>
@@ -270,6 +270,12 @@
                                             <p class="card-text"><strong>Incorrect Pallet Placements:</strong> {{ user.incorrectPalletPlacements }}</p>
                                         </div>
                                     </div>
+                                    <!-- Add this inside the <div class="card-body"> where user details are displayed -->
+                                    <form action="/deleteUser/{{ user.id }}" method="POST">
+                                        <input type="hidden" name="userId" value="{{ user.id }}">
+                                        <button type="submit" class="btn btn-danger">Delete User</button>
+                                    </form>
+
                                 {% else %}
                                     <div class="alert alert-danger mt-3" role="alert">
                                         User not found or an error occurred.
