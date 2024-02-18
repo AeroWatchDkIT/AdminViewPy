@@ -10,8 +10,12 @@
     <h1>Edit Shelf</h1>
     <form action="/editShelf/{{ shelf.id }}" method="POST">
         <label for="palletId">Pallet ID:</label>
+        <input type="text" id="id" name="id" value="{{ shelf.id }}" readonly>
+        <br>
+
         <input type="text" id="palletId" name="palletId" value="{{ shelf.palletId }}">
         <br>
+        
         <label for="location">Location:</label>
         <input type="text" id="location" name="location" value="{{ shelf.location }}" required>
         <br>

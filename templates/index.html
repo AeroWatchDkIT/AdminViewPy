@@ -12,8 +12,6 @@
 
 </head>
 <body id="page-top">
-
-
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->
@@ -196,229 +194,211 @@
                                  </div>
                              </a>
                              <a class="dropdown-item d-flex align-items-center" href="#">
-                                 <div class="mr-3">
-                                     <div class="icon-circle bg-success">
-                                         <i class="fas fa-exclamation-triangle text-white"></i>
-                                     </div>
-                                 </div>
-                                 <div>
-                                     <div class="small text-gray-500">December 7, 2019</div>
-                                     User (x) has placed a pallet incorrectly. Please review the footage.
-                                 </div>
-                             </a>
-                             <a class="dropdown-item d-flex align-items-center" href="#">
-                                 <div class="mr-3">
-                                     <div class="icon-circle bg-warning">
-                                         <i class="fas  fa-exclamation
-                                         text-white"></i>
-                                     </div>
-                                 </div>
-                                 <div>
-                                     <div class="small text-gray-500">December 2, 2019</div>
-                                     Alert: Pallet (x) has been missing for 2 days. Please review the footage.
-                                 </div>
-                             </a>
-                             <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
-                         </div>
-                     </li>
- 
-                    
- 
-                     <div class="topbar-divider d-none d-sm-block"></div>
- 
-                     <!-- Nav Item - User Information -->
-                     <li class="nav-item dropdown no-arrow">
-                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                             <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin Account</span>
-                         </a>
-                         <!-- Dropdown - User Information -->
-                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                         aria-labelledby="userDropdown">
-                         <a class="dropdown-item" href="/createUser">
-                             <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                             Create User
-                         </a>
-                     </li>
- 
-                 </ul>
- 
-             </nav>
-             <!-- End of Topbar -->
- 
-                 <!-- Begin Page Content -->
-                 <div class="container-fluid">
-
-                    <div class="row">
-
-                        
-
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-primary shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                            Total Misplaced Pallets</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalMisplacedPallets">
-                                            0
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-success">
+                                        <i class="fas fa-exclamation-triangle text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="small text-gray-500">December 7, 2019</div>
+                                    User (x) has placed a pallet incorrectly. Please review the footage.
+                                </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-warning">
+                                            <i class="fas  fa-exclamation
+                                            text-white"></i>
                                         </div>
                                     </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-pallet fa-2x text-gray-300"></i>
+                                    <div>
+                                        <div class="small text-gray-500">December 2, 2019</div>
+                                        Alert: Pallet (x) has been missing for 2 days. Please review the footage.
                                     </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <script>
-                        document.addEventListener("DOMContentLoaded", function () {
-                            var totalMisplacedPallets = 0;
-                            {% for user in users %}
-                                {% if user.incorrectPalletPlacements is defined %}
-                                    totalMisplacedPallets += parseInt('{{ user.incorrectPalletPlacements }}');
-                                {% endif %}
-                            {% endfor %}
-                            document.getElementById('totalMisplacedPallets').textContent = totalMisplacedPallets;
-                        });
-                    </script>
-                    
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-success shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                            Total Count of Users</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalCountUsers">
-                                            0 <!-- Initial value, will be updated by JavaScript -->
+                                </li>
+
+
+
+                                <div class="topbar-divider d-none d-sm-block"></div>
+
+                                <!-- Nav Item - User Information -->
+                                <li class="nav-item dropdown no-arrow">
+                                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin Account</span>
+                                    </a>
+                                    <!-- Dropdown - User Information -->
+                                    <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                    aria-labelledby="userDropdown">
+                                    <a class="dropdown-item" href="/createUser">
+                                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Create User
+                                    </a>
+                                </li>
+
+                                </ul>
+
+                                </nav>
+                                <!-- End of Topbar -->
+
+                                <!-- Begin Page Content -->
+                                <div class="container-fluid">
+
+                                <div class="row">
+
+
+
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    <div class="card border-left-primary shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                        Total Misplaced Pallets</div>
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalMisplacedPallets">
+                                                        0
+                                                    </div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-pallet fa-2x text-gray-300"></i>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-user fa-2x text-gray-300"></i>
+                                </div>
+
+                                <script>
+                                    document.addEventListener("DOMContentLoaded", function () {
+                                        var totalMisplacedPallets = 0;
+                                        {% for user in users %}
+                                            {% if user.incorrectPalletPlacements is defined %}
+                                                totalMisplacedPallets += parseInt('{{ user.incorrectPalletPlacements }}');
+                                            {% endif %}
+                                        {% endfor %}
+                                        document.getElementById('totalMisplacedPallets').textContent = totalMisplacedPallets;
+                                    });
+                                </script>
+
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    <div class="card border-left-success shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                        Total Count of Users</div>
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalCountUsers">
+                                                        0 <!-- Initial value, will be updated by JavaScript -->
+                                                    </div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-user fa-2x text-gray-300"></i>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <script>
-                        document.addEventListener("DOMContentLoaded", function () {
-                            var totalCountUsers = 0;
-                            {% for user in users %}
-                                {% if user.id is defined %}
-                                    totalCountUsers++;
-                                {% endif %}
-                            {% endfor %}
-                            document.getElementById('totalCountUsers').textContent = totalCountUsers;
-                        });
-                    </script>
+
+                                <script>
+                                    document.addEventListener("DOMContentLoaded", function () {
+                                        var totalCountUsers = 0;
+                                        {% for user in users %}
+                                            {% if user.id is defined %}
+                                                totalCountUsers++;
+                                            {% endif %}
+                                        {% endfor %}
+                                        document.getElementById('totalCountUsers').textContent = totalCountUsers;
+                                    });
+                                </script>
 
 
-                    </div>
-
-                   <!-- Content Row -->
-
- <!-- Area Chart -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Total Pallet Loss</h6>
                                 </div>
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
+
+                                <!-- Content Row -->
+
+                                <!-- Area Chart -->
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">Total Pallet Loss</h6>
                                     </div>
-                                    <hr>
-                                </div>
-                            </div> 
-
-                             <!-- Bar Chart -->
-                             <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">User Pallet Loss</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-bar">
-                                        <canvas id="myBarChart"></canvas>
+                                    <div class="card-body">
+                                        <div class="chart-area">
+                                            <canvas id="myAreaChart"></canvas>
+                                        </div>
+                                        <hr>
                                     </div>
-                                    <hr>
+                                </div> 
+
+                                <!-- Bar Chart -->
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">User Pallet Loss</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-bar">
+                                            <canvas id="myBarChart"></canvas>
+                                        </div>
+                                        <hr>
+                                    </div>
                                 </div>
-                            </div>
 
-                        </div>  
-                        
-                 <!-- /.container-fluid -->
- 
-             </div>
-             <!-- End of Main Content -->
- 
-             <!-- Footer -->
-             <footer class="sticky-footer bg-white">
-                 <div class="container my-auto">
-                     <div class="copyright text-center my-auto">
-                         <span>Copyright &copy;PalletSync</span>
-                     </div>
-                 </div>
-             </footer>
-             <!-- End of Footer -->
- 
-         </div>
-         <!-- End of Content Wrapper -->
- 
-     </div>
-     <!-- End of Page Wrapper -->
- 
-     <!-- Scroll to Top Button-->
-     <a class="scroll-to-top rounded" href="#page-top">
-         <i class="fas fa-angle-up"></i>
-     </a>
- 
-     <!-- Logout Modal-->
-     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-         <div class="modal-dialog" role="document">
-             <div class="modal-content">
-                 <div class="modal-header">
-                     <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                         <span aria-hidden="true">×</span>
-                     </button>
-                 </div>
-                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                 <div class="modal-footer">
-                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                     <a class="btn btn-primary" href="login.html">Logout</a>
-                 </div>
-             </div>
-         </div>
-     </div>
- 
-     <script src="{{ url_for('static', filename='bootstrap/vendor/jquery/jquery.min.js') }}"></script>
-     <!-- Bootstrap core JavaScript-->
-     <!-- <script src="bootstrap/static/vendor/jquery/jquery.min.js"></script> -->
-     <!-- <script src="bootstrap/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
-     <script src="{{ url_for('static', filename='bootstrap/vendor/jquery/jquery.min.js') }}"></script>
-     <script src="{{ url_for('static', filename='bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+                                </div>  
 
-     <!-- Core plugin JavaScript-->
-     <script src="{{url_for('static', filename='bootstrap/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
- 
-     <!-- Custom scripts for all pages-->
-     <script src="{{url_for('static', filename='bootstrap/js/sb-admin-2.min.js')}}"></script>
- 
-     <!-- Page level plugins -->
-     <script src="{{url_for('static', filename='bootstrap/vendor/chart.js/Chart.min.js')}}"></script>
-          <!-- Page level custom scripts -->
-          <script src="{{url_for('static',filename='bootstrap/js/demo/datatables-demo.js')}}"></script>
-          <!-- Custom scripts for all pages--> 
-          <!-- Page level plugins -->
-          <script src="{{url_for('static', filename='bootstrap/vendor/chart.js/Chart.min.js')}}"></script>
-      
-          <!-- Page level custom scripts -->
-          <script src="{{url_for('static', filename='bootstrap/js/demo/chart-area-demo.js')}}"></script>
-          <script src="{{url_for('static', filename='bootstrap/js/demo/ForkliftPieChart.js')}}"></script>
-          
-         <script src="{{url_for('static', filename='bootstrap/js/demo/chart-bar-demo.js')}}"></script>
+                                <!-- /.container-fluid -->
+
+                                </div>
+                                <!-- End of Main Content -->
+
+                                <!-- Footer -->
+                                <footer class="sticky-footer bg-white">
+                                    <div class="container my-auto">
+                                        <div class="copyright text-center my-auto">
+                                            <span>Copyright &copy;PalletSync</span>
+                                        </div>
+                                    </div>
+                                </footer>
+                                <!-- End of Footer -->
+
+                                </div>
+                                <!-- End of Content Wrapper -->
+
+                                </div>
+                                <!-- End of Page Wrapper -->
+
+                                <!-- Scroll to Top Button-->
+                                <a class="scroll-to-top rounded" href="#page-top">
+                                    <i class="fas fa-angle-up"></i>
+                                </a>
+
+                                <!-- Logout Modal-->
+                                <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                                <a class="btn btn-primary" href="login.html">Logout</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+    <script src="{{ url_for('static', filename='bootstrap/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{url_for('static', filename='bootstrap/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
+    <script src="{{url_for('static', filename='bootstrap/js/sb-admin-2.min.js')}}"></script>
+    <script src="{{url_for('static', filename='bootstrap/vendor/chart.js/Chart.min.js')}}"></script>
+    <script src="{{url_for('static',filename='bootstrap/js/demo/datatables-demo.js')}}"></script>
+    <script src="{{url_for('static', filename='bootstrap/js/demo/chart-area-demo.js')}}"></script>
+    <script src="{{url_for('static', filename='bootstrap/js/demo/ForkliftPieChart.js')}}"></script>
+    <script src="{{url_for('static', filename='bootstrap/js/demo/chart-bar-demo.js')}}"></script>
     </body>
 </html>

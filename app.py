@@ -102,6 +102,14 @@ def deleteUser(id):
 
 @app.route('/createUser', methods=['GET', 'POST'])
 def createUser():
+    # Add user data to the API
+# Fetch user data from the provided API
+    response_users = requests.get(USERS_API, verify=False)
+    if response_users.status_code == 200:
+        users_data = response_users.json().get('users', [])
+    else:
+        users_data = []
+
     if request.method == 'POST':
         # Assuming the form data uses the same keys as your data structure
         new_data = {
@@ -116,7 +124,7 @@ def createUser():
         response = requests.post(USERS_API, json=new_data, verify=False)
         if response.status_code == 201:
             return redirect(url_for('index'))  # Ensure you have an 'index' route defined
-    return render_template('createUser.html')
+    return render_template('createUser.html', users=users_data)
 
 
 # Create Forklift
@@ -372,7 +380,7 @@ def deleteShelf(id):
         if response.status_code == 204:
             return redirect(url_for('shelves'))
     
-    return render_template('deleteShelf.html', id=id)
+    return render_template('index.html', id=id)
 
 if __name__ == '__main__':
     #app.run(host='0.0.0.0', port=5000)
