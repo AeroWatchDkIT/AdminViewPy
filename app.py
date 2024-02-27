@@ -342,7 +342,7 @@ def createShelf():
         new_data = {
             'id': request.form['id'],
             'palletId': request.form['palletId'],
-            'pallet': None,  # Adjust this as needed
+            # 'pallet': None,  # Adjust this as needed
             'location': request.form['location']
         }
         response = requests.post(SHELVES_API, json={'entities': [new_data]}, verify=False)

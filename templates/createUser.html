@@ -25,7 +25,7 @@
                 <hr class="sidebar-divider my-0">
                     <!-- Nav Item - Dashboard -->
                     <li class="nav-item active">
-                        <a class="nav-link" href="">
+                        <a class="nav-link" href="/">
                             <i class="fas fa-fw fa-tachometer-alt"></i>
                             <span>Dashboard</span></a>
                     </li>
@@ -247,6 +247,11 @@
                                 <div class="container-fluid">
                                     <h2>Create User Form</h2>
 
+                                    <!-- Add this into white box container -->
+                                
+                                    
+
+
                                     <form action="/createUser" method="post">
                                         <label for="id">ID:</label><br>
                                         <!-- Add pattern attribute for validation -->
@@ -265,6 +270,7 @@
                                         <input type="number" id="incorrectPalletPlacements" name="incorrectPalletPlacements" required><br><br>
                                         <input type="submit" value="Submit">
                                     </form>
+
                                 <div class="row">
 
                                 </div>
@@ -324,10 +330,5 @@
     <script src="{{ url_for('static', filename='bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{url_for('static', filename='bootstrap/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
     <script src="{{url_for('static', filename='bootstrap/js/sb-admin-2.min.js')}}"></script>
-    <script src="{{url_for('static', filename='bootstrap/vendor/chart.js/Chart.min.js')}}"></script>
-    <script src="{{url_for('static',filename='bootstrap/js/demo/datatables-demo.js')}}"></script>
-    <script src="{{url_for('static', filename='bootstrap/js/demo/chart-area-demo.js')}}"></script>
-    <script src="{{url_for('static', filename='bootstrap/js/demo/ForkliftPieChart.js')}}"></script>
-    <script src="{{url_for('static', filename='bootstrap/js/demo/chart-bar-demo.js')}}"></script>
 </body>
 </html>

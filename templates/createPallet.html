@@ -14,10 +14,10 @@
         function validateIdFormat() {
             var idInput = document.getElementById('id');
             var idValue = idInput.value;
-            var idPattern = /^F-\d{4}$/;  // Regular expression for the format "F-1234"
+            var idPattern = /^P-\d{4}$/;  // Regular expression for the format "F-1234"
 
             if (!idPattern.test(idValue)) {
-                alert('ID must be in the F-1234 format');
+                alert('ID must be in the P-1234 format');
                 idInput.focus();
                 return false;
             }
@@ -58,9 +58,9 @@
                                         <div class="form-group">
                                             <input type="text" id="id" name="id" class="form-control form-control-user" placeholder="P-XXXX" value="P-" required>
                                             </br>
-                                            <input type="number" id="state" name="state" class="form-control form-control-user" required>
+                                            <input type="number" id="state" name="state" class="form-control form-control-user" placeholder="State" required>
                                             </br>
-                                            <input type="text" id="location" name="location" class="form-control form-control-user" required>
+                                            <input type="text" id="location" name="location" class="form-control form-control-user" placeholder="Location" required>
                                         </div>
 
                                         <button type="submit" class="btn btn-primary btn-user btn-block">
@@ -68,7 +68,7 @@
                                         </button>
                                         <hr>
                                         <a href="{{ url_for('pallets') }}" class="btn btn-google btn-user btn-block">
-                                            <i class="fab fa-fw"></i> Back To 
+                                            <i class="fab fa-fw"></i> Back To Pallet List
                                         </a>
                                     </form>
                                     <hr>
