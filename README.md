@@ -34,3 +34,7 @@ app.UseCors(options =>
 		.AllowAnyMethod();
 });
 ```
+### Load Testing 
+```bash
+py -m locust
+```
