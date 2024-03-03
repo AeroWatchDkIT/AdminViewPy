@@ -1,3 +1,4 @@
+
 function createPieChart(authorizedUsers, unauthorizedUsers) {
   var ctx = document.getElementById("forkliftPieChart");
   var userPieChart = new Chart(ctx, {
@@ -32,7 +33,7 @@ function createPieChart(authorizedUsers, unauthorizedUsers) {
 }
 
 
-// Function to define and train neural network model using tensor flow
+// Function to define and train a neural network model
 async function trainModel(trainingData) {
   const model = tf.sequential();
   model.add(tf.layers.dense({ units: 1, inputShape: [2], activation: 'sigmoid' }));
@@ -56,8 +57,14 @@ fetch('https://localhost:7128/Users')
   })
   .then(async trainingData => {
 
+    // Prepare training data
+const tdata = {
+  inputs: trainingData.users.map(user => [user.forkliftCertified ? 1 : 0, user.incorrectPalletPlacements]),
+  labels: trainingData.users.map(user => [user.userType === 1 ? 1 : 0]) // userType 1 is authorized, 0 is unauthorized
+};
+
     // Train the model using the training data
-    const model = await trainModel(trainingData);
+    const model = await trainModel(tdata);
     
 
     // Fetch user data from the API
