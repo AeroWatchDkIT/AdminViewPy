@@ -36,16 +36,20 @@ function createPieChart(authorizedUsers, unauthorizedUsers) {
 // Function to define and train a neural network model
 async function trainModel(trainingData) {
   const model = tf.sequential();
-  model.add(tf.layers.dense({ units: 1, inputShape: [2], activation: 'sigmoid' }));
-  model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
+  model.add(tf.layers.dense({ units: 16, inputShape: [2], activation: 'relu' }));
+  model.add(tf.layers.dense({ units: 8, activation: 'relu' }));
+  model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+  
+  model.compile({ optimizer: tf.train.adam(0.01), loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
   const inputs = tf.tensor2d(trainingData.inputs);
   const labels = tf.tensor2d(trainingData.labels);
 
-  await model.fit(inputs, labels, { epochs: 10 });
+  await model.fit(inputs, labels, { epochs: 50, shuffle: true });
 
   return model;
 }
+
 
 // Fetch training data from the API
 fetch('https://localhost:7128/Users')
@@ -56,16 +60,14 @@ fetch('https://localhost:7128/Users')
     return response.json();
   })
   .then(async trainingData => {
-
     // Prepare training data
-const tdata = {
-  inputs: trainingData.users.map(user => [user.forkliftCertified ? 1 : 0, user.incorrectPalletPlacements]),
-  labels: trainingData.users.map(user => [user.userType === 1 ? 1 : 0]) // userType 1 is authorized, 0 is unauthorized
-};
+    const tdata = {
+      inputs: trainingData.users.map(user => [user.forkliftCertified ? 1 : 0, user.incorrectPalletPlacements]),
+      labels: trainingData.users.map(user => [user.userType === 1 ? 1 : 0]) // userType 1 is authorized, 0 is unauthorized
+    };
 
     // Train the model using the training data
     const model = await trainModel(tdata);
-    
 
     // Fetch user data from the API
     fetch('https://localhost:7128/Users')
@@ -93,3 +95,4 @@ const tdata = {
   .catch(error => {
     console.error('Error fetching training data from the API:', error);
   });
+
