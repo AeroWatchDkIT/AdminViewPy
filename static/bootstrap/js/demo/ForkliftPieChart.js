@@ -32,9 +32,18 @@ function createPieChart(authorizedUsers, unauthorizedUsers) {
 }
 
 
-// Function to define and train a simple neural network model
+// Function to define and train neural network model using tensor flow
 async function trainModel(trainingData) {
+  const model = tf.sequential();
+  model.add(tf.layers.dense({ units: 1, inputShape: [2], activation: 'sigmoid' }));
+  model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
+  const inputs = tf.tensor2d(trainingData.inputs);
+  const labels = tf.tensor2d(trainingData.labels);
+
+  await model.fit(inputs, labels, { epochs: 10 });
+
+  return model;
 }
 
 // Fetch training data from the API
