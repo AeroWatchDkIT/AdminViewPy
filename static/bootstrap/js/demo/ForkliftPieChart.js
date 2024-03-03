@@ -76,7 +76,12 @@ const tdata = {
         return response.json();
       })
       .then(data => {
-        // Use the trained model to predict authorization for each user
+        // Using the trained model to predict authorization for each user
+        const inputs = data.users.map(user => [user.forkliftCertified ? 1 : 0, user.incorrectPalletPlacements]);
+        const predictions = model.predict(tf.tensor2d(inputs)).dataSync();
+
+        const authorizedUsers = data.users.filter((user, index) => predictions[index] > 0.5);
+        const unauthorizedUsers = data.users.filter((user, index) => predictions[index] <= 0.5);
 
         // Call the function to create the Pie Chart with the predicted data
         createPieChart(authorizedUsers, unauthorizedUsers);
