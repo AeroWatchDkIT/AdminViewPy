@@ -10,6 +10,32 @@ SHELVES_API = 'https://localhost:7128/Shelves'
 USERS_API = 'https://localhost:7128/Users'
 TRACKING_LOG = 'https://localhost:7128/TrackingLogs'
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        user_id = request.form['userId']
+        pass_code = request.form['passCode']
+        request_from_admin = request.form.get('requestFromAdmin', False)
+
+        # Call the API to authenticate the user
+        response = requests.post(f"{USERS_API}/Authenticate", params={
+            'userId': user_id,
+            'passCode': pass_code,
+            'requestFromAdmin': request_from_admin
+        }, verify=False)
+
+        if response.status_code == 200:
+            # Successful login, you might want to redirect to a dashboard or home page
+            print('Login successful')
+            return redirect(url_for('index'))  # Assuming 'index' is a route defined in your app
+        else:
+            # Login failed, you can flash a message or return to the login page with an error
+            error_message = 'Login failed, please try again.'
+            return render_template('login.html', error=error_message)
+
+    # If it's a GET request, just render the login form
+    return render_template('login.html')
+
 @app.route('/')
 def index():
     # Fetch data from the Forklifts endpoint
