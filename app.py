@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, abort, g, make_response
+from flask import Flask, render_template, request, redirect, url_for, abort, g, make_response, session
 import requests
 
 app = Flask(__name__)
@@ -10,24 +10,27 @@ SHELVES_API = 'https://localhost:7128/Shelves'
 USERS_API = 'https://localhost:7128/Users'
 TRACKING_LOG = 'https://localhost:7128/TrackingLogs'
 
+app.secret_key = 'your_secret_key'
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         user_id = request.form['userId']
         pass_code = request.form['passCode']
-        request_from_admin = request.form.get('requestFromAdmin', False)
+        # Directly get a boolean value from the form input
+        request_from_admin = request.form.get('requestFromAdmin', 'false').lower() == 'true'
 
-        # Call the API to authenticate the user
+        # Call the API to authenticate the user with the correct boolean type
         response = requests.post(f"{USERS_API}/Authenticate", params={
             'userId': user_id,
             'passCode': pass_code,
             'requestFromAdmin': request_from_admin
-        }, verify=False)
+        },verify=False
+        )  # ensure verify is set appropriately for your environment
 
         if response.status_code == 200:
-            # Successful login, you might want to redirect to a dashboard or home page
-            print('Login successful')
-            return redirect(url_for('index'))  # Assuming 'index' is a route defined in your app
+            # Successful login, store user_id in session
+            session['user_id'] = user_id
+            return redirect(url_for('index'))
         else:
             # Login failed, you can flash a message or return to the login page with an error
             error_message = 'Login failed, please try again.'
@@ -38,6 +41,15 @@ def login():
 
 @app.route('/')
 def index():
+    # Check if user is logged in
+    if 'user_id' not in session:
+        # If not logged in, redirect to login page
+        return redirect(url_for('login'))
+    
+    # Retrieve username from session (make sure to set this upon login)
+    username = session.get('firstName', 'Guest')  # Default to 'Guest' if not found
+    # Proceed with your existing code to fetch forklifts and users data
+
     # Fetch data from the Forklifts endpoint
     response_forklifts = requests.get(FORKLIFTS_API, verify=False)
     if response_forklifts.status_code == 200:
@@ -58,7 +70,14 @@ def index():
         return response
 
     # Render the index page with forklift and user data if both datasets are present
-    return render_template('index.html', forklifts=forklifts_data, users=users_data)
+    return render_template('index.html', forklifts=forklifts_data, users=users_data, username=username)
+
+@app.route('/logout')
+def logout():
+    # Clear the user_id from the session
+    session.pop('user_id', None)
+    return redirect(url_for('login'))
+
 
 @app.route('/trackingLog')
 def trackingLog():
