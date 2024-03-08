@@ -10,7 +10,7 @@ SHELVES_API = 'https://localhost:7128/Shelves'
 USERS_API = 'https://localhost:7128/Users'
 TRACKING_LOG = 'https://localhost:7128/TrackingLogs'
 
-app.secret_key = 'your_secret_key'
+app.secret_key = 'AdminViewPySecretKey'
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -46,9 +46,12 @@ def index():
         # If not logged in, redirect to login page
         return redirect(url_for('login'))
     
-    # Retrieve username from session (make sure to set this upon login)
-    username = session.get('firstName', 'Guest')  # Default to 'Guest' if not found
-    # Proceed with your existing code to fetch forklifts and users data
+    user_ID = session.get('user_id', 'Guest')  # Default to 'Guest' if not found
+    response = requests.get(f'{USERS_API}/{user_ID}', verify=False)
+    if response.status_code == 200:
+        username = response.json().get('firstName')
+    else:
+        username = 'Guest'
 
     # Fetch data from the Forklifts endpoint
     response_forklifts = requests.get(FORKLIFTS_API, verify=False)
