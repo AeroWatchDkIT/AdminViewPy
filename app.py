@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, abort, g, make_response
+from flask import Flask, render_template, request, redirect, url_for, abort, g, make_response, session
 import requests
 
 app = Flask(__name__)
@@ -10,21 +10,77 @@ SHELVES_API = 'https://localhost:7128/Shelves'
 USERS_API = 'https://localhost:7128/Users'
 TRACKING_LOG = 'https://localhost:7128/TrackingLogs'
 
+app.secret_key = 'AdminViewPySecretKey'
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        user_id = request.form['userId']
+        pass_code = request.form['passCode']
+        # Directly get a boolean value from the form input
+        request_from_admin = request.form.get('requestFromAdmin', 'false').lower() == 'true'
+
+        # Call the API to authenticate the user with the correct boolean type
+        response = requests.post(f"{USERS_API}/Authenticate", params={
+            'userId': user_id,
+            'passCode': pass_code,
+            'requestFromAdmin': request_from_admin
+        },verify=False
+        )  # ensure verify is set appropriately for your environment
+
+        if response.status_code == 200:
+            # Successful login, store user_id in session
+            session['user_id'] = user_id
+            return redirect(url_for('index'))
+        else:
+            # Login failed, you can flash a message or return to the login page with an error
+            error_message = 'Login failed, please try again.'
+            return render_template('login.html', error=error_message)
+
+    # If it's a GET request, just render the login form
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    # Clear the user_id from the session
+    session.pop('user_id', None)
+    return redirect(url_for('login'))
+
+# Function to check if the user is logged in
+def is_logged_in():
+    return 'user_id' in session
+
+# Function to get the logged-in user's ID
+def get_logged_in_user_id():
+    return session.get('user_id', None)
+
+# Function to fetch user data from the API
+def get_user_data(user_id):
+    response = requests.get(f'{USERS_API}/{user_id}', verify=False)
+    if response.status_code == 200:
+        return response.json()
+    return None
+
+
+# Index route
 @app.route('/')
 def index():
+    if not is_logged_in():
+        return redirect(url_for('login'))
+
+    user_id = get_logged_in_user_id()
+    user_data = get_user_data(user_id)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
+
     # Fetch data from the Forklifts endpoint
     response_forklifts = requests.get(FORKLIFTS_API, verify=False)
-    if response_forklifts.status_code == 200:
-        forklifts_data = response_forklifts.json().get('entities', [])
-    else:
-        forklifts_data = []
+    forklifts_data = response_forklifts.json().get('entities', []) if response_forklifts.status_code == 200 else []
 
     # Fetch user data from the provided API
     response_users = requests.get(USERS_API, verify=False)
-    if response_users.status_code == 200:
-        users_data = response_users.json().get('users', [])
-    else:
-        users_data = []
+    users_data = response_users.json().get('users', []) if response_users.status_code == 200 else []
 
     if not forklifts_data and not users_data:
         # Directly render the 404 template with user data and set the status code to 404
@@ -32,27 +88,43 @@ def index():
         return response
 
     # Render the index page with forklift and user data if both datasets are present
-    return render_template('index.html', forklifts=forklifts_data, users=users_data)
+    return render_template('index.html', forklifts=forklifts_data, users=users_data, username=username)
 
+
+# Tracking log route
 @app.route('/trackingLog')
 def trackingLog():
-        # Fetch data from the Forklifts endpoint
-    response_trackingLog = requests.get(TRACKING_LOG, verify=False)
-    if response_trackingLog.status_code == 200:
-        trackingLog_data = response_trackingLog.json().get('entities', [])
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_id = get_logged_in_user_id()
+    user_data = get_user_data(user_id)
+    if user_data:
+        username = user_data.get('firstName')
     else:
-        trackingLog_data = []
+        username = 'Guest'
+
+    response_trackingLog = requests.get(TRACKING_LOG, verify=False)
+    trackingLog_data = response_trackingLog.json().get('entities', []) if response_trackingLog.status_code == 200 else []
 
     response_users = requests.get(USERS_API, verify=False)
-    if response_users.status_code == 200:
-        users_data = response_users.json().get('users', [])
-    else:
-        users_data = []
-    
-    return render_template('trackingLog.html', trackingLog=trackingLog_data, users=users_data)
+    users_data = response_users.json().get('users', []) if response_users.status_code == 200 else []
+
+    return render_template('trackingLog.html', trackingLog=trackingLog_data, users=users_data,username=username)
+
 
 @app.errorhandler(404)
 def not_found(error):
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
+
     # Fetch user data from the same API as in the index route
     response_users = requests.get(USERS_API, verify=False)
     if response_users.status_code == 200:
@@ -61,12 +133,21 @@ def not_found(error):
         users_data = []
 
     # Render the custom 404 page with user data
-    return render_template('404.html', users=users_data), 404
+    return render_template('404.html', users=users_data,username=username), 404
 
 
 
 @app.route('/user/<string:user_id>')
 def view_user(user_id):
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
     # Fetch the user data by user_id from your API or database
     response = requests.get(f'{USERS_API}/{user_id}', verify=False)
     response_users = requests.get(USERS_API, verify=False)
@@ -82,7 +163,7 @@ def view_user(user_id):
     else:
         # Handle the case where the user is not found or an error occurs
         user = None
-    return render_template('viewUsers.html', user=user,userLoop=userData)
+    return render_template('viewUsers.html', user=user,userLoop=userData,username=username)
 
 @app.route('/deleteUser/<string:id>', methods=['GET', 'POST'])
 def deleteUser(id):
@@ -102,6 +183,15 @@ def deleteUser(id):
 
 @app.route('/createUser', methods=['GET', 'POST'])
 def createUser():
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
     # Add user data to the API
 # Fetch user data from the provided API
     response_users = requests.get(USERS_API, verify=False)
@@ -124,12 +214,22 @@ def createUser():
         response = requests.post(USERS_API, json=new_data, verify=False)
         if response.status_code == 201:
             return redirect(url_for('index'))  # Ensure you have an 'index' route defined
-    return render_template('createUser.html', users=users_data)
+    return render_template('createUser.html', users=users_data,username=username)
 
 
 # Create Forklift
 @app.route('/createForklift', methods=['GET', 'POST'])
 def create():
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
+
     if request.method == 'POST':
         # Process the form data and create a new data entry using the API
         new_data = {
@@ -142,10 +242,19 @@ def create():
             return redirect(url_for('index'))
     
     # Display a form for creating new data
-    return render_template('createForklift.html')
+    return render_template('createForklift.html', username=username)
 
 @app.route('/forklifts')
 def forklifts():
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
     # Fetch data from the Forklifts endpoint
     response_forklifts = requests.get(FORKLIFTS_API, verify=False)
     if response_forklifts.status_code == 200:
@@ -159,10 +268,19 @@ def forklifts():
     else:
         users_data = []
 
-    return render_template('forklifts.html', forklifts=forklifts_data, users=users_data)
+    return render_template('forklifts.html', forklifts=forklifts_data, users=users_data,username=username)
 
 @app.route('/forkliftsCharts')
 def forkliftsCharts():
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
     # Fetch data from the Forklifts endpoint
     response_forklifts = requests.get(FORKLIFTS_API, verify=False)
     if response_forklifts.status_code == 200:
@@ -176,11 +294,20 @@ def forkliftsCharts():
     else:
         users_data = []
 
-    return render_template('forkliftCharts.html', forklifts=forklifts_data, users=users_data)
+    return render_template('forkliftCharts.html', forklifts=forklifts_data, users=users_data,username=username)
 
 # Update Forklift
 @app.route('/editForklifts/<string:id>', methods=['GET', 'POST'])
 def edit(id):
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
     # Fetch the existing data entry based on the provided ID
     response = requests.get(f'{FORKLIFTS_API}/{id}', verify=False)
     if response.status_code == 200:
@@ -202,11 +329,20 @@ def edit(id):
             return redirect(url_for('index'))
 
     # Display a form for editing the existing data
-    return render_template('editForklift.html', data=data_entry)
+    return render_template('editForklift.html', data=data_entry,username=username)
 
 # Delete Forklift
 @app.route('/deleteForklifts/<string:id>', methods=['GET', 'POST'])
 def delete(id):
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
     if request.method == 'POST':
         # Send a DELETE request to your API to delete the data entry by ID
         response = requests.delete(f'{FORKLIFTS_API}/{id}', verify=False)
@@ -215,10 +351,19 @@ def delete(id):
             return redirect(url_for('forklifts'))
 
     # Display a confirmation page for deleting the data
-    return render_template('deleteForklift.html', id=id)
+    return render_template('deleteForklift.html', id=id,username=username)
 
 @app.route('/pallets')
 def pallets():
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
     # Fetch data from the Pallets endpoint
     pallet_response = requests.get(PALLETS_API, verify=False)
     if pallet_response.status_code == 200:
@@ -233,10 +378,19 @@ def pallets():
     else:
         users_data = []
 
-    return render_template('pallets.html', pallets=pallets_data, users=users_data)
+    return render_template('pallets.html', pallets=pallets_data, users=users_data,username=username)
 
 @app.route('/palletCharts')
 def palletCharts():
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
     # Fetch data from the Pallets endpoint
     pallet_response = requests.get(PALLETS_API, verify=False)
     if pallet_response.status_code == 200:
@@ -251,11 +405,21 @@ def palletCharts():
     else:
         users_data = []
 
-    return render_template('palletCharts.html', pallets=pallets_data, users=users_data)
+    return render_template('palletCharts.html', pallets=pallets_data, users=users_data,username=username)
 
 # Create Pallet Data (Create)
 @app.route('/createPallet', methods=['GET', 'POST'])
 def create_pallet():
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
+
     if request.method == 'POST':
         # Process the form data and create a new pallet entry using the API
         new_pallet_data = {
@@ -275,6 +439,15 @@ def create_pallet():
 # Update Pallet Data (Update)
 @app.route('/editPallet/<string:id>', methods=['GET', 'POST'])
 def edit_pallet(id):
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
     # Fetch the existing pallet data entry based on the provided ID
     response = requests.get(f'{PALLETS_API}/{id}', verify=False)
     if response.status_code == 200:
@@ -306,6 +479,15 @@ def edit_pallet(id):
 # Delete Pallet Data (Delete)
 @app.route('/deletePallet/<string:id>', methods=['GET', 'POST'])
 def delete_pallet(id):
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
     if request.method == 'POST':
         # Send a DELETE request to your Pallets API to delete the pallet data entry by ID
         response = requests.delete(f'{PALLETS_API}/{id}', verify=False)
@@ -318,6 +500,15 @@ def delete_pallet(id):
 
 @app.route('/shelves')
 def shelves():
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
     # Fetch data from the Shelves endpoint
     response_shelves = requests.get(SHELVES_API, verify=False)
     if response_shelves.status_code == 200:
@@ -332,12 +523,21 @@ def shelves():
     else:
         users_data = []
 
-    return render_template('shelves.html', shelves=shelves_data, users=users_data)
+    return render_template('shelves.html', shelves=shelves_data, users=users_data,username=username)
 
 
 # Create Shelf
 @app.route('/createShelf', methods=['GET', 'POST'])
 def createShelf():
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
     if request.method == 'POST':
         new_data = {
             'id': request.form['id'],
@@ -354,6 +554,15 @@ def createShelf():
 # Edit Shelf
 @app.route('/editShelf/<string:id>', methods=['GET', 'POST'])
 def editShelf(id):
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
     response = requests.get(f'{SHELVES_API}/{id}', verify=False)
     if response.status_code == 200:
         shelf_data = response.json()
@@ -370,17 +579,26 @@ def editShelf(id):
         if response.status_code == 200:
             return redirect(url_for('shelves'))
     
-    return render_template('editShelf.html', shelf=shelf_data)
+    return render_template('editShelf.html', shelf=shelf_data,username=username)
 
 # Delete Shelf
 @app.route('/deleteShelf/<string:id>', methods=['GET', 'POST'])
 def deleteShelf(id):
+    if not is_logged_in():
+        return redirect(url_for('login'))
+    
+    user_idOne = get_logged_in_user_id()
+    user_data = get_user_data(user_idOne)
+    if user_data:
+        username = user_data.get('firstName')
+    else:
+        username = 'Guest'
     if request.method == 'POST':
         response = requests.delete(f'{SHELVES_API}/{id}', verify=False)
         if response.status_code == 204:
             return redirect(url_for('shelves'))
     
-    return render_template('index.html', id=id)
+    return render_template('index.html', id=id,username=username)
 
 if __name__ == '__main__':
     #app.run(host='0.0.0.0', port=5000)
