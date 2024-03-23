@@ -1,3 +1,6 @@
+// Set new default font family and font color to mimic Bootstrap's default styling
+Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+Chart.defaults.global.defaultFontColor = '#858796';
 
 function createPieChart(authorizedUsers, unauthorizedUsers) {
   var ctx = document.getElementById("forkliftPieChart");
@@ -32,14 +35,13 @@ function createPieChart(authorizedUsers, unauthorizedUsers) {
   });
 }
 
-
 // Function to define and train a neural network model
 async function trainModel(trainingData) {
   const model = tf.sequential();
-  model.add(tf.layers.dense({ units: 16, inputShape: [2], activation: 'relu' }));
+  model.add(tf.layers.dense({ units: 16, inputShape: [1], activation: 'relu' }));
   model.add(tf.layers.dense({ units: 8, activation: 'relu' }));
   model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
-  
+
   model.compile({ optimizer: tf.train.adam(0.01), loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
   const inputs = tf.tensor2d(trainingData.inputs);
@@ -49,7 +51,6 @@ async function trainModel(trainingData) {
 
   return model;
 }
-
 
 // Fetch training data from the API
 fetch('https://localhost:7128/Users')
@@ -62,9 +63,9 @@ fetch('https://localhost:7128/Users')
   .then(async trainingData => {
     // Prepare training data
     const tdata = {
-      inputs: trainingData.users.map(user => [user.forkliftCertified ? 1 : 0, user.incorrectPalletPlacements]),
-      labels: trainingData.users.map(user => [user.userType === 1 ? 1 : 0]) // userType 1 is authorized, 0 is unauthorized
-    };
+      inputs: trainingData.users.map(user => [user.incorrectPalletPlacements]),
+      labels: trainingData.users.map(user => [user.incorrectPalletPlacements > 4 ? 0 : (user.forkliftCertified ? 1 : 0)]) // Predict not certified if incorrectPalletPlacements > 4
+    }; 
 
     // Train the model using the training data
     const model = await trainModel(tdata);
@@ -79,7 +80,7 @@ fetch('https://localhost:7128/Users')
       })
       .then(data => {
         // Using the trained model to predict authorization for each user
-        const inputs = data.users.map(user => [user.forkliftCertified ? 1 : 0, user.incorrectPalletPlacements]);
+        const inputs = data.users.map(user => [user.incorrectPalletPlacements]);
         const predictions = model.predict(tf.tensor2d(inputs)).dataSync();
 
         const authorizedUsers = data.users.filter((user, index) => predictions[index] > 0.5);
@@ -95,4 +96,3 @@ fetch('https://localhost:7128/Users')
   .catch(error => {
     console.error('Error fetching training data from the API:', error);
   });
-
