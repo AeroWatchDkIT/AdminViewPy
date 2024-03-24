@@ -38,19 +38,6 @@ function prepareTrainingData(trackingLogData, userData) {
 
 // Train the model
 async function trainModel(trainingData) {
-  const xs = trainingData.map(data => data.incorrectPalletPlacements);
-  const ys = trainingData.map(data => data.userId);
-
-  // Define and train the model using TensorFlow.js
-  const model = tf.sequential();
-  model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
-
-  model.compile({ optimizer: 'sgd', loss: 'meanSquaredError' });
-  const xsTensor = tf.tensor2d(xs, [xs.length, 1]);
-  const ysTensor = tf.tensor2d(ys, [ys.length, 1]);
-
-  await model.fit(xsTensor, ysTensor, { epochs: 100 });
-
   return model;
 }
 
@@ -61,7 +48,6 @@ function predict(model, userData) {
     const prediction = model.predict(input).dataSync()[0];
     return { userId: user.id, predictedIncorrectPalletPlacements: prediction };
   });
-
   return predictions;
 }
 
@@ -95,14 +81,4 @@ function displayBarChart(predictions) {
   });
 }
 
-// Main function to orchestrate the process
-async function main() {
-  const { trackingLogData, userData } = await fetchData();
-  const trainingData = prepareTrainingData(trackingLogData, userData);
-  const model = await trainModel(trainingData);
-  const predictions = predict(model, userData);
-  displayBarChart(predictions);
-}
 
-// Call the main function to start the process
-main();
