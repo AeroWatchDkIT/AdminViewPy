@@ -38,16 +38,24 @@ function prepareTrainingData(trackingLogData, userData) {
 
 // Train the model
 async function trainModel(trainingData) {
+  const xs = trainingData.map(data => data.incorrectPalletPlacements);
+  const ys = trainingData.map(data => data.userId);
+
+  // Define and train the model using TensorFlow.js
+  const model = tf.sequential();
+  model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
+
+  model.compile({ optimizer: 'sgd', loss: 'meanSquaredError' });
+  const xsTensor = tf.tensor2d(xs, [xs.length, 1]);
+  const ysTensor = tf.tensor2d(ys, [ys.length, 1]);
+
+  await model.fit(xsTensor, ysTensor, { epochs: 100 });
+
   return model;
 }
 
 // Make predictions using the trained model
 function predict(model, userData) {
-  const predictions = userData.users.map(user => {
-    const input = tf.tensor2d([[user.incorrectPalletPlacements]]);
-    const prediction = model.predict(input).dataSync()[0];
-    return { userId: user.id, predictedIncorrectPalletPlacements: prediction };
-  });
   return predictions;
 }
 
@@ -80,5 +88,3 @@ function displayBarChart(predictions) {
     }
   });
 }
-
-
