@@ -3,7 +3,7 @@ async function fetchData() {
   try {
     const [trackingLogResponse, userResponse] = await Promise.all([
       fetch('https://localhost:7128/TrackingLogs'),
-      fetch('https://localhost:7128/users')
+      fetch('https://localhost:7128/Users')
     ]);
     
     if (!trackingLogResponse.ok || !userResponse.ok) {
@@ -22,6 +22,19 @@ async function fetchData() {
 }
 
 // Prepare training data
+// function prepareTrainingData(trackingLogData, userData) {
+//   const trainingData = userData.users.map(user => {
+//     const incorrectPalletPlacements = trackingLogData.entities.filter(entry => entry.userId === user.id && entry.palletState === 0).length;
+//     return({
+//       userId: user.id,
+//       incorrectPalletPlacements
+//     });
+//   });
+
+//   return trainingData;
+// }
+
+// Prepare training data
 function prepareTrainingData(trackingLogData, userData) {
   const trainingData = [];
 
@@ -35,6 +48,7 @@ function prepareTrainingData(trackingLogData, userData) {
 
   return trainingData;
 }
+
 
 // Train the model
 async function trainModel(trainingData) {
@@ -98,9 +112,12 @@ function displayBarChart(predictions) {
 // Main function to orchestrate the process
 async function main() {
   const { trackingLogData, userData } = await fetchData();
+  console.log(trackingLogData,userData)
   const trainingData = prepareTrainingData(trackingLogData, userData);
+  console.log(trainingData)
   const model = await trainModel(trainingData);
   const predictions = predict(model, userData);
+  console.log(predictions)
   displayBarChart(predictions);
 }
 
