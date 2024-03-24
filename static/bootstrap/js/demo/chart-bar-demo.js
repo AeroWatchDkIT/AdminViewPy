@@ -56,6 +56,12 @@ async function trainModel(trainingData) {
 
 // Make predictions using the trained model
 function predict(model, userData) {
+  const predictions = userData.users.map(user => {
+    const input = tf.tensor2d([[user.incorrectPalletPlacements]]);
+    const prediction = model.predict(input).dataSync()[0];
+    return { userId: user.id, predictedIncorrectPalletPlacements: prediction };
+  });
+
   return predictions;
 }
 
