@@ -94,3 +94,15 @@ function displayBarChart(predictions) {
     }
   });
 }
+
+// Main function to orchestrate the process
+async function main() {
+  const { trackingLogData, userData } = await fetchData();
+  const trainingData = prepareTrainingData(trackingLogData, userData);
+  const model = await trainModel(trainingData);
+  const predictions = predict(model, userData);
+  displayBarChart(predictions);
+}
+
+// Call the main function to start the process
+main();
