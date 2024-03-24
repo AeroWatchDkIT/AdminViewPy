@@ -86,7 +86,11 @@ function predict(model, userData) {
 // Display results in a bar chart
 function displayBarChart(predictions) {
   const userIds = predictions.map(prediction => prediction.userId);
-  const predictedValues = predictions.map(prediction => prediction.predictedIncorrectPalletPlacements);
+  const predictedValues =predictions.map(prediction => {
+    // Check if the predicted value is negative, if so, set it to 0
+    const predictedValue = prediction.predictedIncorrectPalletPlacements;
+    return predictedValue < 0 ? 0 : predictedValue;
+  });
 
   const ctx = document.getElementById('barChart').getContext('2d');
   const barChart = new Chart(ctx, {
