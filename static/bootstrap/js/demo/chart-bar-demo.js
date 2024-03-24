@@ -36,14 +36,15 @@ async function fetchData() {
 
 // Prepare training data
 function prepareTrainingData(trackingLogData, userData) {
-  const trainingData = [];
+  const trainingData = {
+    inputs: [],
+    labels: []
+  };
 
   userData.users.forEach(user => {
     const incorrectPalletPlacements = trackingLogData.entities.filter(entry => entry.userId === user.id && entry.palletState === 0).length;
-    trainingData.push({
-      userId: user.id,
-      incorrectPalletPlacements
-    });
+    trainingData.inputs.push([incorrectPalletPlacements]);
+    trainingData.labels.push(user.forkliftCertified ? 1 : 0);
   });
 
   return trainingData;
@@ -52,8 +53,11 @@ function prepareTrainingData(trackingLogData, userData) {
 
 // Train the model
 async function trainModel(trainingData) {
-  const xs = trainingData.map(data => data.incorrectPalletPlacements);
-  const ys = trainingData.map(data => data.userId);
+  console.log(JSON.stringify(trainingData))
+  const xs = trainingData.inputs;
+  const ys = trainingData.labels;
+  console.log(JSON.stringify(xs),xs.length)
+  console.log(JSON.stringify(ys),ys.length)
 
   // Define and train the model using TensorFlow.js
   const model = tf.sequential();
