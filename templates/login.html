@@ -12,14 +12,10 @@
 </head>
 
 <body class="bg-gradient-primary">
-
     <div class="container">
-
         <!-- Outer Row -->
         <div class="row justify-content-center">
-
             <div class="col-xl-10 col-lg-12 col-md-9">
-
                 <div class="card o-hidden border-0 shadow-lg my-5">
                     <div class="card-body p-0">
                         <!-- Nested Row within Card Body -->
@@ -30,53 +26,66 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                     </div>
+                                    <div id="faceDetectionStatus" class="text-center h4 mb-4">Checking face detection...</div>
                                     <form action="{{ url_for('login') }}" method="post" class="user">
                                         <div class="form-group">
-                                            <input type="text" name="userId" class="form-control form-control-user"
-                                                id="userId" aria-describedby="userID"
-                                                placeholder="Enter UserID Please...">
+                                            <input type="text" name="userId" class="form-control form-control-user" id="userId" aria-describedby="userID" placeholder="Enter UserID Please...">
                                         </div>
                                         <div class="form-group">
-                                            <input type="password" class="form-control form-control-user"
-                                                id="passCode" name="passCode" placeholder="Password">
+                                            <input type="password" class="form-control form-control-user" id="passCode" name="passCode" placeholder="Password">
                                         </div>
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox small">
                                                 <select id="requestFromAdmin" name="requestFromAdmin">
                                                     <option value="true">Yes</option>
-                                                </select>   
+                                                </select>
                                                 <label for="requestFromAdmin">Request from Admin:</label>
-                                             
                                             </div>
                                         </div>
-                                            <input class="btn btn-primary btn-user btn-block" type="submit" value="Login">
+                                        <input class="btn btn-primary btn-user btn-block" type="submit" value="Login">
                                     </form>
                                     {% if error %}
                                     <p>{{ error }}</p>
                                     {% endif %}
                                     <hr>
-
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
-    <script src="{{ url_for('static', filename='bootstrap/vendor/jquery/jquery.min.js') }}"></script>
+    <!-- Load jQuery from CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{url_for('static', filename='bootstrap/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
     <script src="{{url_for('static', filename='bootstrap/js/sb-admin-2.min.js')}}"></script>
-    <script src="{{url_for('static', filename='bootstrap/vendor/chart.js/Chart.min.js')}}"></script>
-    <script src="{{url_for('static',filename='bootstrap/js/demo/datatables-demo.js')}}"></script>
-    <script src="{{url_for('static', filename='bootstrap/js/demo/chart-area-demo.js')}}"></script>
-    <script src="{{url_for('static', filename='bootstrap/js/demo/ForkliftPieChart.js')}}"></script>
-    <script src="{{url_for('static', filename='bootstrap/js/demo/chart-bar-demo.js')}}"></script>
-
+    <!-- Your custom script after jQuery is loaded -->
+    <script>
+      $(document).ready(function() {
+    function fetchFaceDetectionStatus() {
+        console.log("Fetching face detection status...");
+        $.getJSON('/get_last_message', function(data) {
+            console.log("Data received:", data);
+            let message = "No face detected.";
+            // Adjusted logic: Assuming face detection if 'userId' is present and not an empty string.
+            if (data.userId && data.userId !== 'string') {
+                message = "Face detected.";
+            } else {
+                message = "No face detected. Please ensure your face is visible to the camera.";
+            }
+            $("#faceDetectionStatus").text(message);
+            console.log("Updated message on page:", message);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.log("Request failed: " + textStatus + ", " + errorThrown);
+        });
+    }
+    
+    // Poll for the latest face detection status every 5 seconds
+    setInterval(fetchFaceDetectionStatus, 5000);
+});
+    </script>
 </body>
 </html>

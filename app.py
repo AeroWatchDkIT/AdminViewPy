@@ -1,5 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, abort, g, make_response, session
+from flask import Flask, render_template, request, redirect, url_for, abort, g, make_response, session, jsonify
 import requests
+from pubnub.pubnub import PubNub
+from pubnub.pnconfiguration import PNConfiguration
+from pubnub.callbacks import SubscribeCallback
 
 app = Flask(__name__)
 
@@ -10,34 +13,69 @@ SHELVES_API = 'https://localhost:7128/Shelves'
 USERS_API = 'https://localhost:7128/Users'
 TRACKING_LOG = 'https://localhost:7128/TrackingLogs'
 
+
+# Global storage for the last received PubNub message
+last_pubnub_message = {}
+
+class MyListener(SubscribeCallback):
+    def message(self, pubnub, message):
+        global last_pubnub_message
+        # Store the received message
+        last_pubnub_message = message.message
+        print(f"Received message: {last_pubnub_message}")
+
+# PubNub configuration
+pnconfig = PNConfiguration()
+pnconfig.subscribe_key = 'sub-c-878f6650-7fba-4b01-bd5c-061c161b0e9a'
+pnconfig.ssl = True
+pnconfig.uuid = 'your_unique_identifier'
+
+# Initialize and start listening on PubNub
+pubnub = PubNub(pnconfig)
+pubnub.add_listener(MyListener())
+pubnub.subscribe().channels('face_recognition_channel').execute()
+
+
 app.secret_key = 'AdminViewPySecretKey'
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        user_id = request.form['userId']
-        pass_code = request.form['passCode']
-        # Directly get a boolean value from the form input
-        request_from_admin = request.form.get('requestFromAdmin', 'false').lower() == 'true'
+    global last_pubnub_message  # Access the global variable
 
-        # Call the API to authenticate the user with the correct boolean type
+    if request.method == 'POST':
+        # Check if PubNub message contains required fields
+        if 'userId' in last_pubnub_message and 'passCode' in last_pubnub_message:
+            user_id = last_pubnub_message['userId']
+            pass_code = last_pubnub_message['passCode']
+            request_from_admin = last_pubnub_message.get('requestFromAdmin', False)
+        else:
+            # Handle the case where the required data is not available
+            error_message = 'Required information is missing. Please try again.'
+            return render_template('login.html', error=error_message)
+
+        # Call the API to authenticate the user with the data from PubNub
         response = requests.post(f"{USERS_API}/Authenticate", params={
             'userId': user_id,
             'passCode': pass_code,
             'requestFromAdmin': request_from_admin
-        },verify=False
-        )  # ensure verify is set appropriately for your environment
+        }, verify=False)  # ensure verify is set appropriately for your environment
 
         if response.status_code == 200:
             # Successful login, store user_id in session
             session['user_id'] = user_id
-            return redirect(url_for('index'))
+            return redirect(url_for('index'))  # Redirect to the 'index' route or your intended destination
         else:
-            # Login failed, you can flash a message or return to the login page with an error
+            # Login failed, show an error message
             error_message = 'Login failed, please try again.'
             return render_template('login.html', error=error_message)
 
-    # If it's a GET request, just render the login form
+    # For GET requests, render the login form
     return render_template('login.html')
+
+@app.route('/get_last_message')
+def get_last_message():
+    global last_pubnub_message
+    face_detected = last_pubnub_message.get('face_detected', False)
+    return jsonify({'face_detected': face_detected})
 
 @app.route('/logout')
 def logout():
