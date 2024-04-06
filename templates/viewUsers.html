@@ -300,20 +300,21 @@
                         
                         <div class="col-xl-4 col-lg-5">
                             <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
+                                <!-- Card Header -->
                                 <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">User Pallet Distribution</h6>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <div class="chart-pie pt-4">
+                                    <div class="chart-pie pt-4" data-correct-pallet-placement="{{ user.incorrectPalletPlacements }}" data-incorrect-pallet-placement="{{ user.correctPalletPlacements }}">
                                         <canvas id="forkliftPieChart"></canvas>
                                     </div>
                                     <hr>
-                                    Pallets to Misplaced Pallets
+                                    Correct Pallets to Misplaced Pallets
                                 </div>
                             </div>
                         </div>
+                        
                         </div>  
                         </div>  
                  <!-- /.container-fluid -->
