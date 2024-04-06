@@ -269,6 +269,26 @@
                                     </div>
                                 </div>
 
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    <div class="card border-left-warning shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                        Total Count of Correct Pallets</div>
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalCountPallets">
+                                                        0 <!-- Initial value, will be updated by JavaScript -->
+                                                    </div>
+                                                </div>
+                                                <div class="col-auto">
+                                                   
+                                                    <i class="fas fa-solid fa-check fa-2x text-gray-300"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <script>
                                     document.addEventListener("DOMContentLoaded", function () {
                                         var totalMisplacedPallets = 0;
@@ -300,6 +320,21 @@
                                     </div>
                                 </div>
 
+                             
+
+                                <script>
+                                    document.addEventListener("DOMContentLoaded", function () {
+                                        var totalCountPallets = 0;
+                                        {% for user in users %}
+                                            {% if user.correctPalletPlacements is defined %}
+                                                totalCountPallets += parseInt('{{ user.correctPalletPlacements }}');
+                                            {% endif %}
+                                        {% endfor %}
+                                        document.getElementById('totalCountPallets').textContent = totalCountPallets;
+                                    });
+                                </script>
+
+
                                 <script>
                                     document.addEventListener("DOMContentLoaded", function () {
                                         var totalCountUsers = 0;
@@ -330,18 +365,7 @@
                                     </div>
                                 </div> 
 
-                                <!-- Bar Chart -->
-                                <div class="card shadow mb-4">
-                                    <div class="card-header py-3">
-                                        <h6 class="m-0 font-weight-bold text-primary">User Pallet Loss</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="chart-bar">
-                                            <canvas id="myBarChart"></canvas>
-                                        </div>
-                                        <hr>
-                                    </div>
-                                </div>
+                            
 
                                 </div>  
 
