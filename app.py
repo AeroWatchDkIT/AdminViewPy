@@ -106,7 +106,7 @@ def generate_frames():
                     print(f"Access Granted for {name}")
 
                     # Send message over PubNub
-                    payload = {'userId': "string1", 'passCode': 'string', 'requestFromAdmin': True}
+                    payload = {'userId': "U-0009", 'passCode': 'password', 'requestFromAdmin': True}
                     print(f"Sending message: {payload}")
                     pubnub.publish().channel('face_recognition_channel').message(payload).pn_async(publish_callback)
                 else:
@@ -725,4 +725,4 @@ def deleteShelf(id):
 
 if __name__ == '__main__':
     #app.run(host='0.0.0.0', port=5000)
-    app.run(debug=True)
+    app.run(debug=True, threaded=True)
