@@ -3,6 +3,14 @@ import requests
 from pubnub.pubnub import PubNub
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub.callbacks import SubscribeCallback
+import os
+import cv2
+import face_recognition
+import numpy as np
+from pubnub.pubnub import PubNub
+from pubnub.pnconfiguration import PNConfiguration
+from flask import Flask, Response
+
 
 app = Flask(__name__)
 
@@ -35,8 +43,85 @@ pubnub = PubNub(pnconfig)
 pubnub.add_listener(MyListener())
 pubnub.subscribe().channels('face_recognition_channel').execute()
 
+# Initialize PubNub
+pnconfig = PNConfiguration()
+pnconfig.publish_key = 'pub-c-9eb20452-d655-4bf0-91b9-8eecde9199e3'
+pnconfig.subscribe_key = 'sub-c-878f6650-7fba-4b01-bd5c-061c161b0e9a'
+pnconfig.ssl = True
+pnconfig.uuid = 'unique_identifier_for_this_client'
+pubnub = PubNub(pnconfig)
+
 
 app.secret_key = 'AdminViewPySecretKey'
+
+# Callback function for publish response
+def publish_callback(result, status):
+    if not status.is_error():
+        print(f"Message published successfully: {result}")
+    else:
+        print(f"Failed to publish message: {status}")
+
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
+
+# Load all images from the operatorimages folder and create encodings
+image_folder = "operatorImages"
+known_face_encodings = []
+known_face_names = []
+for filename in os.listdir(image_folder):
+    if filename.endswith(".jpg") or filename.endswith(".png"):
+        image_path = os.path.join(image_folder, filename)
+        image = face_recognition.load_image_file(image_path)
+        image_encodings = face_recognition.face_encodings(image)
+        if image_encodings:
+            face_encoding = image_encodings[0]
+            person_name = os.path.splitext(os.path.basename(filename))[0]
+            known_face_encodings.append(face_encoding)
+            known_face_names.append(person_name)
+
+def generate_frames():
+    cap = cv2.VideoCapture(0)
+    while True:
+        success, frame = cap.read()
+        if not success:
+            break
+
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            face_frame = frame[y:y + h, x:x + w]
+            face_frame_rgb = cv2.cvtColor(face_frame, cv2.COLOR_BGR2RGB)
+            current_face_encoding = face_recognition.face_encodings(face_frame_rgb)
+
+            if current_face_encoding:
+                matches = face_recognition.compare_faces(known_face_encodings, current_face_encoding[0])
+                name = "Unknown"
+
+                face_distances = face_recognition.face_distance(known_face_encodings, current_face_encoding[0])
+                best_match_index = np.argmin(face_distances)
+                if matches[best_match_index]:
+                    name = known_face_names[best_match_index]
+                    print(f"Access Granted for {name}")
+
+                    # Send message over PubNub
+                    payload = {'userId': "string1", 'passCode': 'string', 'requestFromAdmin': True}
+                    print(f"Sending message: {payload}")
+                    pubnub.publish().channel('face_recognition_channel').message(payload).pn_async(publish_callback)
+                else:
+                    payload = {'userId': 'invalid', 'passCode': 'invalid', 'requestFromAdmin': True}
+                    pubnub.publish().channel('face_recognition_channel').message(payload).pn_async(publish_callback)
+
+        ret, buffer = cv2.imencode('.jpg', frame)
+        frame = buffer.tobytes()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+@app.route('/video_feed')
+def video_feed():
+    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     global last_pubnub_message  # Access the global variable
