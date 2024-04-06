@@ -1,12 +1,20 @@
 // Function to create the Pie Chart
 function createPieChart(data) {
-  var forkliftsWithUserId = data.entities.filter(function (forklift) {
-    return forklift.lastUserId !== null;
-  });
+  var onShelfCount = data.entities.filter(function (entity) {
+    return entity.place.startsWith("S-");
+  }).length;
 
-  var forkliftsWithoutUserId = data.entities.filter(function (forklift) {
-    return forklift.lastUserId === null;
-  });
+  var onFloorCount = data.entities.filter(function (entity) {
+    return entity.place === "On Floor";
+  }).length;
+
+  var onForkliftCount = data.entities.filter(function (entity) {
+    return entity.place.includes("Forklift");
+  }).length;
+
+  var missingCount = data.entities.filter(function (entity) {
+    return entity.place === "Missing";
+  }).length;
 
   var ctx = document.getElementById("forkliftPieChart");
   var forkliftPieChart = new Chart(ctx, {
@@ -14,9 +22,9 @@ function createPieChart(data) {
     data: {
       labels: ["On Shelf", "On Floor",  "On Forklift", "Missing"],
       datasets: [{
-        data: [99, 10, 3, 2],
-        backgroundColor: ['#4e73df', '#1cc88a'],
-        hoverBackgroundColor: ['#2e59d9', '#17a673'],
+        data: [onShelfCount, onFloorCount, onForkliftCount, missingCount],
+        backgroundColor: ['#4e73df', '#1cc88a', '#f6c23e', '#e74a3b'],
+        hoverBackgroundColor: ['#2e59d9', '#17a673', '#f6c23e', '#e74a3b'],
         hoverBorderColor: "rgba(234, 236, 244, 1)",
       }],
     },
@@ -41,7 +49,7 @@ function createPieChart(data) {
 }
 
 // Fetch data from the API
-fetch('https://localhost:7128/Forklifts')
+fetch('https://localhost:7128/PalletStatuses')
   .then(response => {
     if (!response.ok) {
       throw new Error('Network response was not ok');
