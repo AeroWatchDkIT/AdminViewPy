@@ -22,3 +22,32 @@ class WebsiteUser(HttpUser):
     @task(2)  # This task is twice as likely to be executed
     def shelves(self):
         self.client.get("/shelves")
+
+    @task(2)  # This task is twice as likely to be executed
+    def videos(self):
+        self.client.get("/video_feed")
+
+    @task(2)  # This task is twice as likely to be executed
+    def forkliftChart(self):
+        self.client.get("/forkliftCharts")
+    
+    @task(2)  # This task is twice as likely to be executed
+    def palletChart(self):
+        self.client.get("/palletCharts")
+
+    @task(2)  # This task is twice as likely to be executed
+    def createUser(self):
+        self.client.get("/createUser")
+
+    
+    @task(2)  # This task is twice as likely to be executed
+    def createPallet(self):
+        self.client.get("/createPallet")
+
+    @task(2)  # This task is twice as likely to be executed
+    def createShelves(self):
+        self.client.get("/createShelf")
+
+    @task(2)  # This task is twice as likely to be executed
+    def createForklift(self):
+        self.client.get("/createForklift")
