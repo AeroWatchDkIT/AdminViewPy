@@ -6,59 +6,41 @@ app = Flask(__name__)
 
 # Define your API endpoints
 FORKLIFTS_API = 'https://palletsyncapi.azurewebsites.net/Forklifts'
-PALLETS_API = 'hhttps://palletsyncapi.azurewebsites.net/Pallets'
+PALLETS_API = 'https://palletsyncapi.azurewebsites.net/Pallets'
 SHELVES_API = 'https://palletsyncapi.azurewebsites.net/Shelves'
 USERS_API = 'https://palletsyncapi.azurewebsites.net/Users'
 TRACKING_LOG = 'https://palletsyncapi.azurewebsites.net/TrackingLogs'
 
-
-
-
 app.secret_key = 'AdminViewPySecretKey'
-
-
-
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    global last_pubnub_message  # Access the global variable
-
     if request.method == 'POST':
-        # Check if PubNub message contains required fields
-        if 'userId' in last_pubnub_message and 'passCode' in last_pubnub_message:
-            user_id = last_pubnub_message['userId']
-            pass_code = last_pubnub_message['passCode']
-            request_from_admin = last_pubnub_message.get('requestFromAdmin', False)
-        else:
-            # Handle the case where the required data is not available
-            error_message = 'Required information is missing. Please try again.'
-            return render_template('login.html', error=error_message)
+        user_id = request.form['userId']
+        pass_code = request.form['passCode']
+        # Directly get a boolean value from the form input
+        request_from_admin = request.form.get('requestFromAdmin', 'false').lower() == 'true'
 
-        # Call the API to authenticate the user with the data from PubNub
+        # Call the API to authenticate the user with the correct boolean type
         response = requests.post(f"{USERS_API}/Authenticate", params={
             'userId': user_id,
             'passCode': pass_code,
             'requestFromAdmin': request_from_admin
-        }, verify=False)  # ensure verify is set appropriately for your environment
+        },verify=False
+        )  # ensure verify is set appropriately for your environment
 
         if response.status_code == 200:
             # Successful login, store user_id in session
             session['user_id'] = user_id
-            return redirect(url_for('index'))  # Redirect to the 'index' route or your intended destination
+            return redirect(url_for('index'))
         else:
-            # Login failed, show an error message
+            # Login failed, you can flash a message or return to the login page with an error
             error_message = 'Login failed, please try again.'
             return render_template('login.html', error=error_message)
 
-    # For GET requests, render the login form
+    # If it's a GET request, just render the login form
     return render_template('login.html')
 
-@app.route('/get_last_message')
-def get_last_message():
-    global last_pubnub_message
-    face_detected = last_pubnub_message.get('face_detected', False)
-    return jsonify({'face_detected': face_detected})
 
 @app.route('/logout')
 def logout():

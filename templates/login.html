@@ -20,8 +20,6 @@
                     <div class="card-body p-0">
                         <!-- Nested Row within Card Body -->
                         <div class="row">
-                            
-                                <img class="col-lg-6 d-none d-lg-block bg-login-image" src="{{ url_for('video_feed') }}" />
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
@@ -64,29 +62,6 @@
     <script src="{{url_for('static', filename='bootstrap/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
     <script src="{{url_for('static', filename='bootstrap/js/sb-admin-2.min.js')}}"></script>
     <!-- Your custom script after jQuery is loaded -->
-    <script>
-      $(document).ready(function() {
-    function fetchFaceDetectionStatus() {
-        console.log("Fetching face detection status...");
-        $.getJSON('/get_last_message', function(data) {
-            console.log("Data received:", data);
-            let message = "No face detected.";
-            // Adjusted logic: Assuming face detection if 'userId' is present and not an empty string.
-            if (data.userId && data.userId !== 'string') {
-                message = "Face detected.";
-            } else {
-                message = "No face detected. Please ensure your face is visible to the camera.";
-            }
-            $("#faceDetectionStatus").text(message);
-            console.log("Updated message on page:", message);
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.log("Request failed: " + textStatus + ", " + errorThrown);
-        });
-    }
-    
-    // Poll for the latest face detection status every 5 seconds
-    setInterval(fetchFaceDetectionStatus, 5000);
-});
-    </script>
+   
 </body>
 </html>
