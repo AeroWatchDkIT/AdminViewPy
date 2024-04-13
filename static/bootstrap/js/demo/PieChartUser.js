@@ -40,4 +40,18 @@ document.addEventListener('DOMContentLoaded', function() {
   createPieChart(correctPlacement, incorrectPlacement);
 });
 
-
+// Fetch data from the API
+fetch('https://palletsyncapi.azurewebsites.net/Forklifts')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    // Call the function to create the Pie Chart with the fetched data
+    createPieChart(data);
+  })
+  .catch(error => {
+    console.error('Error fetching data from the API:', error);
+  });

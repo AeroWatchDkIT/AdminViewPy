@@ -53,7 +53,7 @@ async function trainModel(trainingData) {
 }
 
 // Fetch training data from the API
-fetch('https://localhost:7128/Users')
+fetch('https://palletsyncapi.azurewebsites.net/Users')
   .then(response => {
     if (!response.ok) {
       throw new Error('Network response was not ok');
@@ -71,7 +71,7 @@ fetch('https://localhost:7128/Users')
     const model = await trainModel(tdata);
 
     // Fetch user data from the API
-    fetch('https://localhost:7128/Users')
+    fetch('https://palletsyncapi.azurewebsites.net/Users')
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');

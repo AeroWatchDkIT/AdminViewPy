@@ -49,7 +49,7 @@ function createPieChart(data) {
 }
 
 // Fetch data from the API
-fetch('https://localhost:7128/PalletStatuses')
+fetch('https://palletsyncapi.azurewebsites.net/PalletStatuses')
   .then(response => {
     if (!response.ok) {
       throw new Error('Network response was not ok');

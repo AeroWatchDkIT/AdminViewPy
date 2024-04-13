@@ -184,40 +184,50 @@ def deleteUser(id):
     return redirect(url_for('index'))
 
 
-@app.route('/createUser', methods=['GET', 'POST'])
+@app.route('/createUser', methods=['POST'])
 def createUser():
     if not is_logged_in():
         return redirect(url_for('login'))
-    
-    user_idOne = get_logged_in_user_id()
-    user_data = get_user_data(user_idOne)
-    if user_data:
-        username = user_data.get('firstName')
-    else:
-        username = 'Guest'
-    # Add user data to the API
-# Fetch user data from the provided API
-    response_users = requests.get(USERS_API, verify=False)
-    if response_users.status_code == 200:
-        users_data = response_users.json().get('users', [])
-    else:
-        users_data = []
 
-    if request.method == 'POST':
-        # Assuming the form data uses the same keys as your data structure
-        new_data = {
-            'id': request.form['id'],
-            'userType': int(request.form['userType']),  # Convert to int as necessary
-            'firstName': request.form['firstName'],
-            'lastName': request.form['lastName'],
-            'passcode': request.form['passcode'],
-            'forkliftCertified': request.form['forkliftCertified'].lower() in ['true', '1', 't', 'y', 'yes'],  # Convert to boolean
-            'incorrectPalletPlacements': int(request.form['incorrectPalletPlacements'])  # Convert to int as necessary
-        }
-        response = requests.post(USERS_API, json=new_data, verify=False)
-        if response.status_code == 201:
-            return redirect(url_for('index'))  # Ensure you have an 'index' route defined
-    return render_template('createUser.html', users=users_data,username=username)
+    # Check if the request has a JSON body
+    if not request.is_json:
+        return jsonify({"message": "Missing JSON in request"}), 400
+
+    # Get data from the JSON request body
+    data = request.get_json()
+
+    # You can now use the data as you need, for example:
+    new_user_data = {
+        'id': data.get('id'),
+        'userType': data.get('UserType'),
+        'firstName': data.get('FirstName'),
+        'lastName': data.get('LastName'),
+        'passcode': data.get('Passcode'),
+        'forkliftCertified': data.get('ForkliftCertified'),
+        'incorrectPalletPlacements': data.get('IncorrectPalletPlacements'),
+        'correctPalletPlacements': data.get('CorrectPalletPlacements'), # Assuming you want this field too
+        'imageFilePath': data.get('ImageFilePath')  # If you are handling file paths
+        # If you are handling file uploads, you need to use request.files['image'] or similar
+    }
+
+    # Handle image file if included
+    if 'image' in request.files:
+        # You will need to save the file and handle it as required by your application
+        image_file = request.files['image']
+        image_file.save('path_to_save_image')
+
+    # Perform your API call to create the new user
+    response = requests.post(USERS_API, json=new_user_data, verify=False)  # Note: verify should usually be True for SSL
+
+    if response.status_code == 201:
+        # If creation is successful
+        return jsonify({"message": "User created successfully"}), 201
+    else:
+        # If there is an error from the API
+        return jsonify(response.json()), response.status_code
+
+    # Return a successful JSON response if no POST or if POST is handled correctly
+    return jsonify({"message": "User creation page"}), 200
 
 
 # Create Forklift
