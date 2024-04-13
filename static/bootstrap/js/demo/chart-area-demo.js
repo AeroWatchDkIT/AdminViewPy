@@ -32,9 +32,9 @@ var ctx = document.getElementById("myAreaChart");
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    labels: ["S-A5.C1.R1", "S-A5.C1.R2", "S-A5.C1.R3", "S-A5.C1.R4", "S-A5.C1.R5","S-A5.C1.R6", "S-A6.C1.R1", "S-A6.C1.R2", "S-A6.C1.R3", "S-A6.C1.R4","S-A6.C1.R5","S-A6.C1.R6"],
     datasets: [{
-      label: "Pallet Errors",
+      label: "Time",
       lineTension: 0.3,
       backgroundColor: "rgba(78, 115, 223, 0.05)",
       borderColor: "rgba(78, 115, 223, 1)",
