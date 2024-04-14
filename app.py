@@ -461,35 +461,27 @@ def edit_pallet(id):
         username = user_data.get('firstName')
     else:
         username = 'Guest'
+
     # Fetch the existing pallet data entry based on the provided ID
     response = requests.get(f'{PALLETS_API}/{id}', verify=False)
     if response.status_code == 200:
-        pallet_entry = response.json()
+        pallet_data = response.json()
     else:
-        # Handle not found or other error scenarios
-        # You can redirect to an error page or show an error message
         return 'Pallet data not found', 404
 
     if request.method == 'POST':
-        # Process the form data and update the existing pallet data entry using the API
         updated_pallet_data = {
             'id': request.form['id'],  # You can choose to update the ID or not
-            'state': request.form['state'],
+            'state': int(request.form['state']),
             'location': request.form['location']
         }
         # Send a PUT request to your Pallets API to update the pallet data entry
         response = requests.put(f'{PALLETS_API}', json=updated_pallet_data, verify=False)
-        print(response)
-        print(PALLETS_API)
-        print(updated_pallet_data)
         if response.status_code == 200:  # Assuming a successful update status code
-            # Redirect to the pallets listing page after successful update
-            print(PALLETS_API)
-            print(updated_pallet_data)
             return redirect(url_for('pallets'))
 
     # Display a form for editing the existing pallet data
-    return render_template('editPallet.html', pallet=pallet_entry)
+    return render_template('editPallet.html', pallet=pallet_data,username=username)
 
  
 

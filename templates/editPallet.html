@@ -8,8 +8,7 @@
 </head>
 <body>
     <h1>Edit Pallet</h1>
-    <form method="POST">
-        <input type="hidden" name="_method" value="PUT"> <!-- For using the PUT method -->
+    <form action="/editPallet/{{pallet.id}}" method="POST">
         <label for="id">ID:</label>
         <input type="text" id="id" name="id" value="{{ pallet.id }}" required>
         <br>
