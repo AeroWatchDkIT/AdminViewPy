@@ -255,18 +255,25 @@
                             <!-- Area Chart -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Pallet Chart</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Pallet Retrieval Time</h6>
                                 </div>
                                 <div class="card-body">
+                                    <select id="aisleDropdown" onchange="updateShelfDropdown()">
+                                        <option value="">Select Aisle</option>
+                                        <option value="1">Aisle 1</option>
+                                        <option value="2">Aisle 2</option>
+                                        <option value="3">Aisle 3</option>
+                                        <option value="4">Aisle 4</option>
+                                        <option value="5">Aisle 5</option>
+                                    </select>
+
                                     <div class="chart-area">
                                         <canvas id="myAreaChart"></canvas>
                                     </div>
                                     <hr>
-
+                                    Predicted Pallet Retrieval Time (in Mins) by Shelf Space.
                                 </div>
                             </div>
-
-
                         </div>
 
                                             <!-- Pie Chart -->
