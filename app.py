@@ -593,7 +593,7 @@ def editShelf(id):
             'palletId': request.form['palletId'],
             'location': request.form['location']
         }
-        response = requests.put(f'{SHELVES_API}/{id}', json=updated_data, verify=False)
+        response = requests.put(f'{SHELVES_API}', json=updated_data, verify=False)
         if response.status_code == 200:
             return redirect(url_for('shelves'))
     
