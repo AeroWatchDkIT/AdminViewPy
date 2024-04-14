@@ -3,23 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/sb-admin-2.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/vendor/fontawesome-free/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/sb-admin-2.min.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link rel="icon" href="{{url_for('static', filename='bootstrap/img/PalletSync2Logo.jpg')}}" type="image/x-icon" />
     <title>Edit Pallet</title>
 </head>
-<body>
-    <h1>Edit Pallet</h1>
-    <form action="/editPallet/{{pallet.id}}" method="POST">
-        <label for="id">ID:</label>
-        <input type="text" id="id" name="id" value="{{ pallet.id }}" required>
-        <br>
-        <label for="state">State:</label>
-        <input type="number" id="state" name="state" value="{{ pallet.state }}" required>
-        <br>
-        <label for="location">Location:</label>
-        <input type="text" id="location" name="location" value="{{ pallet.location }}" required>
-        <br>
-        <button type="submit">Update</button>
-    </form>
-    <a href="{{ url_for('pallets') }}">Back to Pallets</a>
+<body class="bg-gradient-primary">
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <!-- Include your validation.js script -->
+    <script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+
+
+    <div class="container">
+
+        <!-- Outer Row -->
+        <div class="row justify-content-center">
+
+            <div class="col-xl-10 col-lg-12 col-md-9">
+
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <!-- Nested Row within Card Body -->
+                        <div class="row">
+                            <div class="col-lg-6 d-none d-lg-block">
+                                <img src="{{url_for('static', filename='bootstrap/img/PalletSync2Logo.jpg')}}" alt="PalletSync Logo" width="400" height="400">
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <h1 class="h4 text-gray-900 mb-4">Edit Pallet</h1>
+                                    </div>
+                                    <form method="POST" class="user">
+                                        <div class="form-group">
+                                            <input type="hidden" name="_method" value="PUT">  <!-- This is for using PUT in Flask -->
+                                            <input type="text" id="id" name="id" class="form-control form-control-user"
+                                                value="{{pallet.id}}" required>
+                                        </br>
+                                            <input type="number" id="state" name="state" class="form-control form-control-user"
+                                                value="{{pallet.state}}" required>
+                                    </br>
+                                            <input type="text" id="location" name="location" class="form-control form-control-user"
+                                                value="{{pallet.location}}" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-user btn-block">
+                                            Update
+                                        </button>
+                                        <hr>
+                                        <a href="{{ url_for('pallets') }}" class="btn btn-google btn-user btn-block">
+                                            <i class="fab fa-fw"></i> Back To Pallets List
+                                        </a>
+                                    </form>
+                                    <hr>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='bootstrap/vendor/jquery/jquery.min.js') }}"></script>
+    <!-- Bootstrap core JavaScript-->
+    <script src="{{ url_for('static', filename='bootstrap/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="{{url_for('static', filename='bootstrap/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="{{url_for('static', filename='bootstrap/js/sb-admin-2.min.js')}}"></script>
+    <!-- Page level plugins -->
+    <script src="{{url_for('static', filename='bootstrap/vendor/chart.js/Chart.min.js')}}"></script>
+    <!-- Page level custom scripts -->
 </body>
+<body>
 </html>
