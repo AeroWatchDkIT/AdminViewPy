@@ -474,19 +474,24 @@ def edit_pallet(id):
         # Process the form data and update the existing pallet data entry using the API
         updated_pallet_data = {
             'id': request.form['id'],  # You can choose to update the ID or not
-            'state': int(request.form['state']),
+            'state': request.form['state'],
             'location': request.form['location']
         }
         # Send a PUT request to your Pallets API to update the pallet data entry
-        response = requests.put(f'{PALLETS_API}/{id}', json=updated_pallet_data, verify=False)
+        response = requests.put(f'{PALLETS_API}', json=updated_pallet_data, verify=False)
+        print(response)
+        print(PALLETS_API)
+        print(updated_pallet_data)
         if response.status_code == 200:  # Assuming a successful update status code
             # Redirect to the pallets listing page after successful update
+            print(PALLETS_API)
+            print(updated_pallet_data)
             return redirect(url_for('pallets'))
 
     # Display a form for editing the existing pallet data
     return render_template('editPallet.html', pallet=pallet_entry)
 
-
+ 
 
 
 # Delete Pallet Data (Delete)
