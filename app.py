@@ -3,12 +3,13 @@ import requests
 
 
 app = Flask(__name__)
-
-FORKLIFTS_API = 'https://palletsyncapi.azurewebsites.net/Forklifts'
-PALLETS_API = 'https://palletsyncapi.azurewebsites.net/Pallets'
-SHELVES_API = 'https://palletsyncapi.azurewebsites.net/Shelves'
-USERS_API = 'https://palletsyncapi.azurewebsites.net/Users'
-TRACKING_LOG = 'https://palletsyncapi.azurewebsites.net/TrackingLogs'
+# Change to https://palletsyncapi.azurewebsites.net Before Expo !!!
+# https://localhost:7128/
+FORKLIFTS_API = 'https://localhost:7128/Forklifts'
+PALLETS_API = 'https://localhost:7128/Pallets'
+SHELVES_API = 'https://localhost:7128/Shelves'
+USERS_API = 'https://localhost:7128/Users'
+TRACKING_LOG = 'https://localhost:7128/TrackingLogs'
 
 app.secret_key = 'AdminViewPySecretKey'
 
@@ -482,7 +483,7 @@ def edit_pallet(id):
     # Display a form for editing the existing pallet data
     return render_template('editPallet.html', pallet=pallet_data,username=username)
 
- 
+
 
 
 # Delete Pallet Data (Delete)
@@ -499,11 +500,12 @@ def delete_pallet(id):
         username = 'Guest'
     if request.method == 'POST':
         # Send a DELETE request to your Pallets API to delete the pallet data entry by ID
-        response = requests.delete(f'{PALLETS_API}/{id}', verify=False)
-        if response.status_code == 204:  # Assuming a successful deletion status code
+        response = requests.delete(f'{PALLETS_API}',params={
+            'palletId': id
+            }, verify=False)
+        if response.status_code == 200:  # Assuming a successful deletion status code
             # Redirect to the pallets listing page after successful deletion
             return redirect(url_for('pallets'))
-
     # Display a confirmation page for deleting the pallet data
     return render_template('deletePallet.html', id=id)
 
