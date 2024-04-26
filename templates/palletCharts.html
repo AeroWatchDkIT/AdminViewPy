@@ -51,7 +51,7 @@
                  aria-expanded="true" aria-controls="collapseTwo">
                  <i class="fas fa-fw  fa-user
                  "></i>
-                 <span>Users</span>
+                 <span>Employees</span>
              </a>
              <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
@@ -124,11 +124,19 @@
  
              <!-- Topbar -->
              <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                <h1>Pallet Charts</h1>
                  <!-- Sidebar Toggle (Topbar) -->
                  <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                      <i class="fa fa-bars"></i>
                  </button>
+                 <form
+                 class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                 <div class="input-group">
+                        <div>Logged in as {{username}}</div>
+                     <div class="input-group-append">
+                        
+                     </div>
+                 </div>
+             </form>
                  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
                  <!-- Topbar Navbar -->
                  <ul class="navbar-nav ml-auto">
@@ -217,14 +225,14 @@
                      <li class="nav-item dropdown no-arrow">
                          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                             <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{username}}</span>
+                             <span class="mr-2 d-none d-lg-inline text-gray-600 small">Settings</span>
                         </a>
                          <!-- Dropdown - User Information -->
                          <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                          aria-labelledby="userDropdown">
                          <a class="dropdown-item" href="/createUser">
                              <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                             Create User
+                             Create Employee Account
                          </a>
                          <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="/logout" data-toggle="modal" data-target="#logoutModal">
@@ -247,38 +255,45 @@
                             <!-- Area Chart -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Pallet Chart</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Pallet Retrieval Time</h6>
                                 </div>
                                 <div class="card-body">
+                                    <select id="aisleDropdown" onchange="updateShelfDropdown()">
+                                        <option value="">Select Aisle</option>
+                                        <option value="1">Aisle 1</option>
+                                        <option value="2">Aisle 2</option>
+                                        <option value="3">Aisle 3</option>
+                                        <option value="4">Aisle 4</option>
+                                        <option value="5">Aisle 5</option>
+                                    </select>
+
                                     <div class="chart-area">
                                         <canvas id="myAreaChart"></canvas>
                                     </div>
                                     <hr>
-
+                                    Predicted Pallet Retrieval Time (in Mins) by Shelf Space.
                                 </div>
                             </div>
-
-
                         </div>
 
                                             <!-- Pie Chart -->
-                        <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Pallet Distribution</h6>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-pie pt-4">
-                                        <canvas id="forkliftPieChart"></canvas>
-                                    </div>
-                                    <hr>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                                            <div class="col-xl-4 col-lg-5">
+                                                <div class="card shadow mb-4">
+                                                    <!-- Card Header - Dropdown -->
+                                                    <div class="card-header py-3">
+                                                        <h6 class="m-0 font-weight-bold text-primary">User Distribution</h6>
+                                                    </div>
+                                                    <!-- Card Body -->
+                                                    <div class="card-body">
+                                                        <div class="chart-pie pt-4">
+                                                            <canvas id="forkliftPieChart"></canvas>
+                                                        </div>
+                                                        <hr>
+                                                        Total Number of Authorized vs Unauthorized Users
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>                    
                         
 
                  </div>
@@ -344,7 +359,7 @@
  
      <!-- Page level custom scripts -->
      <script src="{{url_for('static', filename='bootstrap/js/demo/chart-area-demo.js')}}"></script>
-     <script src="{{url_for('static', filename='bootstrap/js/demo/PieChartBlankPallet.js')}}"></script>
+     <script src="{{url_for('static', filename='bootstrap/js/demo/ForkliftPieChart.js')}}"></script>
      
     <!-- <script src="{{url_for('static', filename='bootstrap/js/demo/chart-bar-demo.js')}}"></script> -->
 </table>

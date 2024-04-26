@@ -1,166 +1,46 @@
-from flask import Flask, render_template, request, redirect, url_for, abort, g, make_response, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, abort, g, make_response, session, jsonify,Response
 import requests
-from pubnub.pubnub import PubNub
-from pubnub.pnconfiguration import PNConfiguration
-from pubnub.callbacks import SubscribeCallback
-import os
-import cv2
-import face_recognition
-import numpy as np
-from pubnub.pubnub import PubNub
-from pubnub.pnconfiguration import PNConfiguration
-from flask import Flask, Response
 
 
 app = Flask(__name__)
 
 # Define your API endpoints
-FORKLIFTS_API = 'https://localhost:7128/Forklifts'
-PALLETS_API = 'https://localhost:7128/Pallets'
-SHELVES_API = 'https://localhost:7128/Shelves'
-USERS_API = 'https://localhost:7128/Users'
-TRACKING_LOG = 'https://localhost:7128/TrackingLogs'
-
-
-# Global storage for the last received PubNub message
-last_pubnub_message = {}
-
-class MyListener(SubscribeCallback):
-    def message(self, pubnub, message):
-        global last_pubnub_message
-        # Store the received message
-        last_pubnub_message = message.message
-        print(f"Received message: {last_pubnub_message}")
-
-# PubNub configuration
-pnconfig = PNConfiguration()
-pnconfig.subscribe_key = 'sub-c-878f6650-7fba-4b01-bd5c-061c161b0e9a'
-pnconfig.ssl = True
-pnconfig.uuid = 'your_unique_identifier'
-
-# Initialize and start listening on PubNub
-pubnub = PubNub(pnconfig)
-pubnub.add_listener(MyListener())
-pubnub.subscribe().channels('face_recognition_channel').execute()
-
-# Initialize PubNub
-pnconfig = PNConfiguration()
-pnconfig.publish_key = 'pub-c-9eb20452-d655-4bf0-91b9-8eecde9199e3'
-pnconfig.subscribe_key = 'sub-c-878f6650-7fba-4b01-bd5c-061c161b0e9a'
-pnconfig.ssl = True
-pnconfig.uuid = 'unique_identifier_for_this_client'
-pubnub = PubNub(pnconfig)
-
+FORKLIFTS_API = 'https://palletsyncapi.azurewebsites.net/Forklifts'
+PALLETS_API = 'https://palletsyncapi.azurewebsites.net/Pallets'
+SHELVES_API = 'https://palletsyncapi.azurewebsites.net/Shelves'
+USERS_API = 'https://palletsyncapi.azurewebsites.net/Users'
+TRACKING_LOG = 'https://palletsyncapi.azurewebsites.net/TrackingLogs'
 
 app.secret_key = 'AdminViewPySecretKey'
 
-# Callback function for publish response
-def publish_callback(result, status):
-    if not status.is_error():
-        print(f"Message published successfully: {result}")
-    else:
-        print(f"Failed to publish message: {status}")
-
-face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-
-
-# Load all images from the operatorimages folder and create encodings
-image_folder = "operatorImages"
-known_face_encodings = []
-known_face_names = []
-for filename in os.listdir(image_folder):
-    if filename.endswith(".jpg") or filename.endswith(".png"):
-        image_path = os.path.join(image_folder, filename)
-        image = face_recognition.load_image_file(image_path)
-        image_encodings = face_recognition.face_encodings(image)
-        if image_encodings:
-            face_encoding = image_encodings[0]
-            person_name = os.path.splitext(os.path.basename(filename))[0]
-            known_face_encodings.append(face_encoding)
-            known_face_names.append(person_name)
-
-def generate_frames():
-    cap = cv2.VideoCapture(0)
-    while True:
-        success, frame = cap.read()
-        if not success:
-            break
-
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-
-        for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
-            face_frame = frame[y:y + h, x:x + w]
-            face_frame_rgb = cv2.cvtColor(face_frame, cv2.COLOR_BGR2RGB)
-            current_face_encoding = face_recognition.face_encodings(face_frame_rgb)
-
-            if current_face_encoding:
-                matches = face_recognition.compare_faces(known_face_encodings, current_face_encoding[0])
-                name = "Unknown"
-
-                face_distances = face_recognition.face_distance(known_face_encodings, current_face_encoding[0])
-                best_match_index = np.argmin(face_distances)
-                if matches[best_match_index]:
-                    name = known_face_names[best_match_index]
-                    print(f"Access Granted for {name}")
-
-                    # Send message over PubNub
-                    payload = {'userId': "U-0009", 'passCode': 'password', 'requestFromAdmin': True}
-                    print(f"Sending message: {payload}")
-                    pubnub.publish().channel('face_recognition_channel').message(payload).pn_async(publish_callback)
-                else:
-                    payload = {'userId': 'invalid', 'passCode': 'invalid', 'requestFromAdmin': True}
-                    pubnub.publish().channel('face_recognition_channel').message(payload).pn_async(publish_callback)
-
-        ret, buffer = cv2.imencode('.jpg', frame)
-        frame = buffer.tobytes()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-@app.route('/video_feed')
-def video_feed():
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    global last_pubnub_message  # Access the global variable
-
     if request.method == 'POST':
-        # Check if PubNub message contains required fields
-        if 'userId' in last_pubnub_message and 'passCode' in last_pubnub_message:
-            user_id = last_pubnub_message['userId']
-            pass_code = last_pubnub_message['passCode']
-            request_from_admin = last_pubnub_message.get('requestFromAdmin', False)
-        else:
-            # Handle the case where the required data is not available
-            error_message = 'Required information is missing. Please try again.'
-            return render_template('login.html', error=error_message)
+        user_id = request.form['userId']
+        pass_code = request.form['passCode']
+        # Directly get a boolean value from the form input
+        request_from_admin = request.form.get('requestFromAdmin', 'false').lower() == 'true'
 
-        # Call the API to authenticate the user with the data from PubNub
+        # Call the API to authenticate the user with the correct boolean type
         response = requests.post(f"{USERS_API}/Authenticate", params={
             'userId': user_id,
             'passCode': pass_code,
             'requestFromAdmin': request_from_admin
-        }, verify=False)  # ensure verify is set appropriately for your environment
+        },verify=False
+        )  # ensure verify is set appropriately for your environment
 
         if response.status_code == 200:
             # Successful login, store user_id in session
             session['user_id'] = user_id
-            return redirect(url_for('index'))  # Redirect to the 'index' route or your intended destination
+            return redirect(url_for('index'))
         else:
-            # Login failed, show an error message
+            # Login failed, you can flash a message or return to the login page with an error
             error_message = 'Login failed, please try again.'
             return render_template('login.html', error=error_message)
 
-    # For GET requests, render the login form
+    # If it's a GET request, just render the login form
     return render_template('login.html')
 
-@app.route('/get_last_message')
-def get_last_message():
-    global last_pubnub_message
-    face_detected = last_pubnub_message.get('face_detected', False)
-    return jsonify({'face_detected': face_detected})
 
 @app.route('/logout')
 def logout():
@@ -304,40 +184,50 @@ def deleteUser(id):
     return redirect(url_for('index'))
 
 
-@app.route('/createUser', methods=['GET', 'POST'])
+@app.route('/createUser', methods=['POST'])
 def createUser():
     if not is_logged_in():
         return redirect(url_for('login'))
-    
-    user_idOne = get_logged_in_user_id()
-    user_data = get_user_data(user_idOne)
-    if user_data:
-        username = user_data.get('firstName')
-    else:
-        username = 'Guest'
-    # Add user data to the API
-# Fetch user data from the provided API
-    response_users = requests.get(USERS_API, verify=False)
-    if response_users.status_code == 200:
-        users_data = response_users.json().get('users', [])
-    else:
-        users_data = []
 
-    if request.method == 'POST':
-        # Assuming the form data uses the same keys as your data structure
-        new_data = {
-            'id': request.form['id'],
-            'userType': int(request.form['userType']),  # Convert to int as necessary
-            'firstName': request.form['firstName'],
-            'lastName': request.form['lastName'],
-            'passcode': request.form['passcode'],
-            'forkliftCertified': request.form['forkliftCertified'].lower() in ['true', '1', 't', 'y', 'yes'],  # Convert to boolean
-            'incorrectPalletPlacements': int(request.form['incorrectPalletPlacements'])  # Convert to int as necessary
-        }
-        response = requests.post(USERS_API, json=new_data, verify=False)
-        if response.status_code == 201:
-            return redirect(url_for('index'))  # Ensure you have an 'index' route defined
-    return render_template('createUser.html', users=users_data,username=username)
+    # Check if the request has a JSON body
+    if not request.is_json:
+        return jsonify({"message": "Missing JSON in request"}), 400
+
+    # Get data from the JSON request body
+    data = request.get_json()
+
+    # You can now use the data as you need, for example:
+    new_user_data = {
+        'id': data.get('id'),
+        'userType': data.get('UserType'),
+        'firstName': data.get('FirstName'),
+        'lastName': data.get('LastName'),
+        'passcode': data.get('Passcode'),
+        'forkliftCertified': data.get('ForkliftCertified'),
+        'incorrectPalletPlacements': data.get('IncorrectPalletPlacements'),
+        'correctPalletPlacements': data.get('CorrectPalletPlacements'), # Assuming you want this field too
+        'imageFilePath': data.get('ImageFilePath')  # If you are handling file paths
+        # If you are handling file uploads, you need to use request.files['image'] or similar
+    }
+
+    # Handle image file if included
+    if 'image' in request.files:
+        # You will need to save the file and handle it as required by your application
+        image_file = request.files['image']
+        image_file.save('path_to_save_image')
+
+    # Perform your API call to create the new user
+    response = requests.post(USERS_API, json=new_user_data, verify=False)  # Note: verify should usually be True for SSL
+
+    if response.status_code == 201:
+        # If creation is successful
+        return jsonify({"message": "User created successfully"}), 201
+    else:
+        # If there is an error from the API
+        return jsonify(response.json()), response.status_code
+
+    # Return a successful JSON response if no POST or if POST is handled correctly
+    return jsonify({"message": "User creation page"}), 200
 
 
 # Create Forklift
@@ -571,32 +461,29 @@ def edit_pallet(id):
         username = user_data.get('firstName')
     else:
         username = 'Guest'
+
     # Fetch the existing pallet data entry based on the provided ID
     response = requests.get(f'{PALLETS_API}/{id}', verify=False)
     if response.status_code == 200:
-        pallet_entry = response.json()
+        pallet_data = response.json()
     else:
-        # Handle not found or other error scenarios
-        # You can redirect to an error page or show an error message
         return 'Pallet data not found', 404
 
     if request.method == 'POST':
-        # Process the form data and update the existing pallet data entry using the API
         updated_pallet_data = {
             'id': request.form['id'],  # You can choose to update the ID or not
             'state': int(request.form['state']),
             'location': request.form['location']
         }
         # Send a PUT request to your Pallets API to update the pallet data entry
-        response = requests.put(f'{PALLETS_API}/{id}', json=updated_pallet_data, verify=False)
+        response = requests.put(f'{PALLETS_API}', json=updated_pallet_data, verify=False)
         if response.status_code == 200:  # Assuming a successful update status code
-            # Redirect to the pallets listing page after successful update
             return redirect(url_for('pallets'))
 
     # Display a form for editing the existing pallet data
-    return render_template('editPallet.html', pallet=pallet_entry)
+    return render_template('editPallet.html', pallet=pallet_data,username=username)
 
-
+ 
 
 
 # Delete Pallet Data (Delete)
@@ -698,7 +585,7 @@ def editShelf(id):
             'palletId': request.form['palletId'],
             'location': request.form['location']
         }
-        response = requests.put(f'{SHELVES_API}/{id}', json=updated_data, verify=False)
+        response = requests.put(f'{SHELVES_API}', json=updated_data, verify=False)
         if response.status_code == 200:
             return redirect(url_for('shelves'))
     

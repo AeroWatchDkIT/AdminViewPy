@@ -51,7 +51,7 @@
                                         aria-expanded="true" aria-controls="collapseTwo">
                                         <i class="fas fa-fw  fa-user
                                         "></i>
-                                        <span>Users</span>
+                                        <span>Employees</span>
                                     </a>
                                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                                         <div class="bg-white py-2 collapse-inner rounded">
@@ -142,15 +142,9 @@
                             <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
                                 aria-labelledby="searchDropdown">
                                 <form class="form-inline mr-auto w-100 navbar-search">
+                                    
                                     <div class="input-group">
-                                        <input type="text" class="form-control bg-light border-0 small"
-                                            placeholder="Search for..." aria-label="Search"
-                                            aria-describedby="basic-addon2">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary" type="button">
-                                                <i class="fas fa-search fa-sm"></i>
-                                            </button>
-                                        </div>
+                                        <div>Logged in as {{username}}</div>
                                     </div>
                                 </form>
                             </div>
@@ -213,14 +207,14 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{username}}</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Settings</span>
                             </a>
                              <!-- Dropdown - User Information -->
                          <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                          aria-labelledby="userDropdown">
                          <a class="dropdown-item" href="/createUser">
                              <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                             Create User
+                             Create Employee Account
                          </a>
                          <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="/logout" data-toggle="modal" data-target="#logoutModal">

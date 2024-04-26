@@ -1,7 +1,6 @@
 // Set new default font family and font color to mimic Bootstrap's default styling
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
-
 function number_format(number, decimals, dec_point, thousands_sep) {
   // *     example: number_format(1234.56, 2, ',', ' ');
   // *     return: '1 234,56'
@@ -26,15 +25,15 @@ function number_format(number, decimals, dec_point, thousands_sep) {
   }
   return s.join(dec);
 }
-
 // Area Chart Example
 var ctx = document.getElementById("myAreaChart");
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    labels: ["S-A5.C1.R1", "S-A5.C1.R2", "S-A5.C1.R3", "S-A5.C1.R4", "S-A5.C1.R5","S-A5.C1.R6", "S-A6.C1.R1", "S-A6.C1.R2", "S-A6.C1.R3", "S-A6.C1.R4","S-A6.C1.R5","S-A6.C1.R6"],
+    labels: ["S-001", "S-002", "S-003", "S-004", "S-005","S-006", "S-007", "S-008", "S-009", "S-010","S-011","S-012"],
     datasets: [{
-      label: "Pallet Errors",
+      label: "Time",
       lineTension: 0.3,
       backgroundColor: "rgba(78, 115, 223, 0.05)",
       borderColor: "rgba(78, 115, 223, 1)",
@@ -47,6 +46,7 @@ var myLineChart = new Chart(ctx, {
       pointHitRadius: 10,
       pointBorderWidth: 2,
       data: [4, 1, 2, 3, 4, 5, 1, 3, 0, 2, 1,3,2],
+      data: [2, 3, 4, 5, 5, 6, 1, 3, 3, 3, 5,5,6],
     }],
   },
   options: {

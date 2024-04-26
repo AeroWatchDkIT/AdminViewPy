@@ -2,8 +2,8 @@
 async function fetchData() {
   try {
     const [trackingLogResponse, userResponse] = await Promise.all([
-      fetch('https://localhost:7128/TrackingLogs'),
-      fetch('https://localhost:7128/Users')
+      fetch('https://palletsyncapi.azurewebsites.net/TrackingLogs'),
+      fetch('https://palletsyncapi.azurewebsites.net/Users')
     ]);
     
     if (!trackingLogResponse.ok || !userResponse.ok) {

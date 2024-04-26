@@ -41,7 +41,7 @@ function createPieChart(data) {
 }
 
 // Fetch data from the API
-fetch('https://localhost:7128/Forklifts')
+fetch('https://palletsyncapi.azurewebsites.net/Forklifts')
   .then(response => {
     if (!response.ok) {
       throw new Error('Network response was not ok');
