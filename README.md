@@ -34,7 +34,16 @@ app.UseCors(options =>
 		.AllowAnyMethod();
 });
 ```
+
+
+# Running Load Testing
+```
+pip install Locust 
+
+py -m pip install Locust
+```
 ### Load Testing 
 ```bash
 py -m locust
 ```
+
