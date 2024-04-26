@@ -4,7 +4,6 @@ import requests
 
 app = Flask(__name__)
 
-# Define your API endpoints
 FORKLIFTS_API = 'https://palletsyncapi.azurewebsites.net/Forklifts'
 PALLETS_API = 'https://palletsyncapi.azurewebsites.net/Pallets'
 SHELVES_API = 'https://palletsyncapi.azurewebsites.net/Shelves'
@@ -19,7 +18,7 @@ def login():
         user_id = request.form['userId']
         pass_code = request.form['passCode']
         # Directly get a boolean value from the form input
-        request_from_admin = request.form.get('requestFromAdmin', 'false').lower() == 'true'
+        request_from_admin = 'true'
 
         # Call the API to authenticate the user with the correct boolean type
         response = requests.post(f"{USERS_API}/Authenticate", params={
